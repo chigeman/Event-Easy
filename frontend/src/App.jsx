@@ -1,7 +1,12 @@
+import React from 'react';
+import NavBar from './Components/navBar';  // Use capitalized NavBar
+import HomePage from "./Sections/HomePage";
+
 export default function App() {
   return (
-    <h1 className="text-3xl font-bold underline">
-      Welcome to Event_easy
-    </h1>
-  )
+    <>
+      <NavBar />  {/* Use the correct component name */}
+      <HomePage/>
+    </>
+  );
 }
