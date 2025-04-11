@@ -1,4 +1,4 @@
-# Event Ease: Web-Based All-in-One Event Discovery System
+# Event Easy: Web-Based All-in-One Event Discovery System
 
 ## Overview
 Welcome to **Event Ease**, a revolutionary platform designed to streamline event discovery and management in Ethiopia! Our mission is to enhance user experiences by providing a centralized hub for discovering, organizing, and participating in events. 
