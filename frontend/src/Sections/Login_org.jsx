@@ -1,10 +1,9 @@
 import { motion, useAnimation } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import bg_1 from "../assets/bg_1.jpg"; // replace or add more bg images if needed
 
-import bg_1 from "../assets/bg_1.jpg";
-
-export default function Signup() {
+export default function Login() {
   const [hovered, setHovered] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [currentBg, setCurrentBg] = useState(0);
@@ -46,7 +45,8 @@ export default function Signup() {
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
     >
-      <div className="bg-white rounded-3xl shadow-2xl grid grid-cols-2 w-[900px] h-[650px] overflow-hidden relative">
+      <div className="bg-white rounded-3xl shadow-2xl grid grid-cols-2 w-[900px] h-[600px] overflow-hidden relative">
+        {/* Glowing circle that follows cursor */}
         <motion.div
           className="absolute w-24 h-24 rounded-full bg-gradient-to-r from-purple-400 to-pink-500 opacity-20 pointer-events-none"
           style={{
@@ -56,7 +56,7 @@ export default function Signup() {
           }}
         />
 
-        {/* Left Side - Signup Form */}
+        {/* Left Side - Login Form */}
         <div className="flex flex-col justify-center px-10">
           <motion.h1
             className="text-4xl font-bold mb-4 text-gray-800"
@@ -65,21 +65,16 @@ export default function Signup() {
             onHoverEnd={() => setHovered(false)}
             whileHover={{ rotate: 1 }}
           >
-            Event Organizer Sign-Up
+            Welcome Back!
           </motion.h1>
 
           <motion.p
             className="mb-6 text-sm text-gray-600"
             whileHover={{ scale: 1.03, color: "#6d28d9" }}
           >
-            Create your account and start managing amazing events effortlessly!
+            Please login to your account to manage your awesome events.
           </motion.p>
 
-          <input
-            placeholder="Full Name"
-            type="text"
-            className="mb-4 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm"
-          />
           <input
             placeholder="Email Address"
             type="email"
@@ -88,24 +83,27 @@ export default function Signup() {
           <input
             placeholder="Password"
             type="password"
-            className="mb-4 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm"
-          />
-          <input
-            placeholder="Confirm Password"
-            type="password"
             className="mb-2 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm"
           />
+
+          <motion.a
+            href="#"
+            className="text-sm text-blue-600 hover:underline mb-6"
+            whileHover={{ color: "#1e3a8a" }}
+          >
+            Forgot your password?
+          </motion.a>
 
           <motion.button
             className="w-full bg-indigo-700 hover:bg-indigo-800 text-white px-4 py-3 rounded-lg font-semibold shadow-md"
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.97 }}
           >
-            Create Account
+            Log In
           </motion.button>
 
           <div className="text-center text-sm my-4 text-gray-500">
-            — or sign up using —
+            — or login using —
           </div>
 
           <motion.button
@@ -117,14 +115,14 @@ export default function Signup() {
               alt="Google Logo"
               className="w-5 h-5 mr-2"
             />
-            Sign up with Google
+            Sign in with Google
           </motion.button>
 
           <p className="mt-6 text-sm text-center text-gray-600">
-            Already have an account?{" "}
-            <Link to="/Login_Organizer">
+            Don’t have an account?{" "}
+            <Link to="/Signup_Organizer">
             <a href="#" className="text-blue-600 hover:underline">
-              Sign In
+              Sign up here
             </a>
             </Link>
           </p>
@@ -148,7 +146,7 @@ export default function Signup() {
             className="absolute bottom-4 left-4 right-4 text-gray-500 text-sm text-center"
             whileHover={{ x: [0, 10, -10, 0], transition: { duration: 1 } }}
           >
-            Join the platform that brings events to life with power, precision, and pixels. 💫
+            Your backstage pass to seamless event coordination.
           </motion.p>
         </motion.div>
       </div>
