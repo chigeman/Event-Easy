@@ -101,6 +101,7 @@ export default function EventbriteClone() {
           >
             Find all events and experience here
           </motion.h2>
+          <Link to="/signup_Attendee">
           <motion.button
             className={`mt-2 px-4 py-2 border border-gray-400 rounded hover:bg-gray-100 transition-all ${darkMode ? 'dark:hover:bg-gray-600' : ''}`}
             whileHover={{
@@ -112,6 +113,7 @@ export default function EventbriteClone() {
           >
             go forward to find your trending events
           </motion.button>
+          </Link>
         </motion.div>
 
         {/* Organize Event Card */}
@@ -137,7 +139,7 @@ export default function EventbriteClone() {
           >
             Organize an event
           </motion.h2>
-          <Link to="/signup">
+          <Link to="/signup_Organizer">
           <motion.button
             className={`mt-2 px-4 py-2 border border-gray-400 rounded hover:bg-gray-100 transition-all ${darkMode ? 'dark:hover:bg-gray-600' : ''}`}
             whileHover={{
