@@ -1,23 +1,51 @@
 import { motion, useAnimation } from "framer-motion";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-
-import bg_1 from "../assets/bg_1.jpg"; // replace or add more bg images if needed
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import bg_1 from "../assets/bg_1.jpg";
 
 export default function AttendeeLogin() {
   const [hovered, setHovered] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [currentBg, setCurrentBg] = useState(0);
-
-  const bgImages = [bg_1];
   const headingControls = useAnimation();
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    axios
+      .post("http://localhost:5000/Event-Easy/attendee/login", formData)
+      .then((response) => {
+        console.log("Login successful:", response.data);
+        alert("Welcome back! 🎉");
+        // You can redirect after login here
+        navigate("/Attendee_Dashboard");
+      })
+      .catch((error) => {
+        console.error("Login error:", error);
+        alert("Invalid credentials or server issue. Try again!");
+      });
+  };
 
   useEffect(() => {
     if (hovered) {
       headingControls.start({
-        x: [0, 20],
-        y: [0, 20],
-        transition: { yoyo: Infinity, duration: 0.5 },
+        rotate: [0, 3, -3, 0],
+        transition: { duration: 0.5, repeat: Infinity },
       });
     } else {
       headingControls.stop();
@@ -34,7 +62,7 @@ export default function AttendeeLogin() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentBg((prev) => (prev + 1) % bgImages.length);
+      setCurrentBg((prev) => (prev + 1) % 1); // Only one image now
     }, 7000);
     return () => clearInterval(interval);
   }, []);
@@ -47,7 +75,6 @@ export default function AttendeeLogin() {
       transition={{ duration: 1 }}
     >
       <div className="bg-white rounded-3xl shadow-2xl grid grid-cols-2 w-[900px] h-[600px] overflow-hidden relative">
-        {/* Glowing circle that follows cursor */}
         <motion.div
           className="absolute w-24 h-24 rounded-full bg-gradient-to-r from-purple-400 to-pink-500 opacity-20 pointer-events-none"
           style={{
@@ -64,44 +91,54 @@ export default function AttendeeLogin() {
             animate={headingControls}
             onHoverStart={() => setHovered(true)}
             onHoverEnd={() => setHovered(false)}
-            whileHover={{ rotate: 1 }}
+            whileHover={{ color: "#6366f1" }}
           >
-            Join the Experience!
+            Welcome Back!
           </motion.h1>
 
           <motion.p
             className="mb-6 text-sm text-gray-600"
-            whileHover={{ scale: 1.03, color: "#6d28d9" }}
+            whileHover={{ scale: 1.03 }}
           >
-            Log in to explore and attend exciting events near you.
+            Log in and dive back into the event excitement.
           </motion.p>
 
-          <input
-            placeholder="Email Address"
-            type="email"
-            className="mb-4 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm"
-          />
-          <input
-            placeholder="Password"
-            type="password"
-            className="mb-2 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm"
-          />
+          <form onSubmit={handleSubmit}>
+            <input
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Email Address"
+              type="email"
+              className="mb-4 px-4 py-3 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+              required
+            />
+            <input
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Password"
+              type="password"
+              className="mb-4 px-4 py-3 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+              required
+            />
+            <motion.a
+              href="#"
+              className="text-sm text-indigo-600 hover:underline mb-6 inline-block"
+              whileHover={{ color: "#4f46e5" }}
+            >
+              Forgot your password?
+            </motion.a>
 
-          <motion.a
-            href="#"
-            className="text-sm text-blue-600 hover:underline mb-6"
-            whileHover={{ color: "#1e3a8a" }}
-          >
-            Forgot your password?
-          </motion.a>
-
-          <motion.button
-            className="w-full bg-indigo-700 hover:bg-indigo-800 text-white px-4 py-3 rounded-lg font-semibold shadow-md"
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.97 }}
-          >
-            Log In
-          </motion.button>
+            <motion.button
+              type="submit"
+              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded-lg font-semibold shadow-md"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              Log In
+            </motion.button>
+          </form>
 
           <div className="text-center text-sm my-4 text-gray-500">
             — or login using —
@@ -121,10 +158,8 @@ export default function AttendeeLogin() {
 
           <p className="mt-6 text-sm text-center text-gray-600">
             New to events?{" "}
-            <Link to="/Signup_Attendee">
-            <a href="#" className="text-blue-600 hover:underline">
+            <Link to="/Signup_Attendee" className="text-indigo-600 hover:underline">
               Sign up here
-            </a>
             </Link>
           </p>
         </div>
@@ -132,22 +167,24 @@ export default function AttendeeLogin() {
         {/* Right Side - Background Image & Quote */}
         <motion.div
           className="relative h-full w-full"
-          initial={{ rotateY: 0 }}
-          whileHover={{ rotateY: 180 }}
+          whileHover={{ scale: 1.01 }}
           transition={{ duration: 1 }}
         >
           <motion.img
-            src={bgImages[currentBg]}
-            alt="Event Illustration"
+            src={bg_1}
+            alt="Event Background"
             className="object-cover w-full h-full"
             whileHover={{ scale: 1.03 }}
             transition={{ duration: 0.6 }}
           />
           <motion.p
-            className="absolute bottom-4 left-4 right-4 text-gray-500 text-sm text-center"
-            whileHover={{ x: [0, 10, -10, 0], transition: { duration: 1 } }}
+            className="absolute bottom-4 left-4 right-4 text-white text-sm text-center bg-black bg-opacity-30 px-2 py-1 rounded"
+            whileHover={{
+              x: [0, 5, -5, 0],
+              transition: { duration: 1 },
+            }}
           >
-            Your gateway to unforgettable experiences.
+            Unlock moments. Unleash memories. 🌟
           </motion.p>
         </motion.div>
       </div>
