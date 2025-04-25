@@ -3,9 +3,13 @@ import ReactDOM from "react-dom/client"; // Ensure you use `react-dom/client` fo
 import "./index.css";
 import App from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
+import { AppContextProvider } from "./context/AppContext.jsx"; // Import your context provider
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
-    <App />
+    <AppContextProvider>
+        <App />
+    </AppContextProvider>  
   </BrowserRouter>,
 )
+
