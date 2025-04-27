@@ -1,39 +1,18 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { motion, useMotionValue, useSpring, useScroll, useTransform } from 'framer-motion';
-import { Button } from '../Constants/ui/button';
-import { features } from '../Constants/features';
+import { motion, useMotionValue, useSpring, useScroll } from 'framer-motion';
+import { FaCalendarAlt, FaBolt,  FaMoon, FaSun  , FaBell, FaMapMarkerAlt, FaUsers, FaLock, FaStar, FaSearch, FaMapMarker } from 'react-icons/fa';
+import { FiCalendar, FiMapPin } from 'react-icons/fi';
 import bg_1 from '../assets/bg_1.jpg'; 
 import bg_2 from '../assets/bg_2.webp'; 
-import bg_3 from '../assets/bg_3.jpg'; 
+import bg_3 from '../assets/bg_3.jpg';
 
-
-const LandingPage = () => {
+const EventEasyLanding = () => {
   const [darkMode, setDarkMode] = useState(false);
-  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
-  const [hoveredIndex, setHoveredIndex] = useState(-1);
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({ target: ref });
-  const images = [
-    bg_1, 
-    bg_2,
-    bg_3,
-  ];
-  const [bgImage, setBgImage] = useState(images[0]);
-
-  // Pixel dance animation variants
-  const pixelVariants = {
-    hover: {
-      textShadow: [
-        "0 0 5px #00f",
-        "2px 2px 0 #f00",
-        "-2px -2px 0 #0f0",
-        "0 0 5px #00f"
-      ],
-      transition: { duration: 0.3, repeat: Infinity }
-    }
-  };
-
-  // Cursor following effect
+  const [bgImage, setBgImage] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [locationQuery, setLocationQuery] = useState('');
+  const images = [bg_1, bg_2, bg_3];
+  
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
   const springConfig = { damping: 25, stiffness: 700 };
@@ -50,56 +29,82 @@ const LandingPage = () => {
     return () => window.removeEventListener('mousemove', moveCursor);
   }, []);
 
-  // Parallax effect
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
-
-  // Enhanced hover effects
-  const hoverEffects = {
-    hover: {
-      scale: 1.1,
-      rotate: [0, 5, -5, 0],
-      color: ['#f97316', '#3b82f6', '#10b981'],
-      transition: { duration: 0.5, repeat: Infinity }
-    }
-  };
-
-  // Dynamic background transitions
-  const handleFeatureHover = (index) => {
-    setHoveredIndex(index);
-  };
-
+  // Background image rotation
   useEffect(() => {
-    const savedMode = localStorage.getItem('darkMode');
-    if (savedMode === 'true') {
-      setDarkMode(true);
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-
     const interval = setInterval(() => {
-      const randomImage = images[Math.floor(Math.random() * images.length)];
-      setBgImage(randomImage);  // Set bgImage based on the interval
-      console.log(randomImage); // Log the random image to check
-    }, 5000);
-
+      setBgImage((prev) => (prev + 1) % images.length);
+    }, 8000);
     return () => clearInterval(interval);
-  }, [images]);
+  }, []);
 
+  // Dark mode toggle
   const toggleDarkMode = () => {
     const newMode = !darkMode;
     setDarkMode(newMode);
     document.documentElement.classList.toggle('dark', newMode);
-    // Save dark mode preference in localStorage
     localStorage.setItem('darkMode', newMode);
   };
 
-  
+  const handleSearch = (e) => {
+    e.preventDefault();
+    // Implement search functionality here
+    console.log('Searching for:', searchQuery, 'in', locationQuery);
+  };
+
+
+  // Features data
+  const features = [
+    {
+      icon: <FaBolt className="text-2xl" />,
+      title: "Quick Discovery",
+      description: "Find events tailored to your interests in seconds with our smart recommendation engine."
+    },
+    {
+      icon: <FaBell className="text-2xl" />,
+      title: "Real-Time Updates",
+      description: "Get instant notifications about event changes, cancellations, or new tickets available."
+    },
+    {
+      icon: <FaMapMarkerAlt className="text-2xl" />,
+      title: "Location-Based",
+      description: "See only events near you or search any location with our interactive maps."
+    },
+    {
+      icon: <FaUsers className="text-2xl" />,
+      title: "Social Features",
+      description: "See which friends are going, share events, and connect with like-minded people."
+    },
+    {
+      icon: <FaLock className="text-2xl" />,
+      title: "Secure Booking",
+      description: "100% secure ticketing with verified organizers and fraud protection."
+    },
+    {
+      icon: <FaStar className="text-2xl" />,
+      title: "Ratings & Reviews",
+      description: "Make informed decisions with authentic attendee feedback."
+    }
+  ];
+
+  // Testimonials data
+  const testimonials = [
+    {
+      quote: "Event Easy has completely changed how I find things to do. The personalized recommendations are spot on!",
+      name: "Sarah J.",
+      role: "Music Enthusiast"
+    },
+    {
+      quote: "As an event organizer, Event Easy has helped me reach the right audience. Ticket sales increased by 40%!",
+      name: "Michael T.",
+      role: "Event Organizer"
+    }
+  ];
+
   return (
-    <div className="font-sans text-gray-900 dark:text-gray-100 transition-all min-h-screen" ref={ref}>
-      {/* Floating Cursor Elements */}
+    <div className="font-sans text-gray-900 dark:text-gray-100 min-h-screen">
+      {/* Custom Cursor */}
       <motion.div
-        className="fixed w-8 h-8 border-2 border-purple-500 rounded-full pointer-events-none"
+        className="fixed w-8 h-8 border-2 border-purple-500 rounded-full pointer-events-none z-50"
         style={{
           x: cursorXSpring,
           y: cursorYSpring,
@@ -107,268 +112,416 @@ const LandingPage = () => {
         }}
       />
 
-      {/* Hero Section */}
-        <section
-          className="py-24 px-4 justify-center text-center items-center text-white dark:bg-gradient-to-r dark:from-indigo-700 dark:to-blue-900"
-          style={{
-            backgroundImage: `url(${bgImage})`,  // Dynamically set the background image
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            height: '100vh',  // Ensure it covers the entire viewport height
-          }}
-        >
-            <motion.h1
-              className="text-6xl font-extrabold mb-6 justify-center text-center items-center drop-shadow-lg mt-10 pt-10"
-              initial={{ opacity: 0, y: -50 }}
-              animate={{ opacity: 1, y: 0 }}
-              whileHover={{
-                y: [0, 20, -20, 0],
-                x: [0, 50, -50, 0],
-                color: ['#fff', '#000', '', '#fff'],
-                transition: { duration: 1.5, repeat: Infinity }
-              }}
-              variants={pixelVariants}
-            >
-              Simplify Your Events. Maximize Your Impact.
-            </motion.h1>
-            <p className="text-2xl  mb-8 max-w-3xl mx-auto text-blue-200 dark:text-blue-200">
-              Event-Easy helps you plan, manage, and execute events with ease—so you can focus on what matters most.
-            </p>
-            <motion.button
-        className="bg-gradient-to-r from-[#34d5eb] to-blue-800 text-black text-lg px-8 py-3 rounded-full shadow-lg relative overflow-hidden group "
-        initial={{ scale: 1 }}
-        whileHover={{
-          scale: 1.1,
-          rotate: 10,
-          x: 20,
-          y: 20,
-          backgroundColor: '#f0f0f0',
-          transition: { duration: 0.5, ease: 'easeInOut' },
-        }}
-        whileTap={{ scale: 0.95 }}
-      >
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-600 opacity-0 group-hover:opacity-50 transition-all duration-300"
-        />
-        <motion.span
-          className="relative z-10 group-hover:text-blue-800 transition-colors duration-300"
-          whileHover={{ y: -5 }}
-          whileTap={{ y: 5 }}
-        >
-          Get Started
-        </motion.span>
-        <motion.div
-          className="absolute bottom-0 left-0 right-0 h-1 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-all duration-500"
-        />
-      </motion.button>
-        </section>
-
-
       {/* Dark Mode Toggle */}
-      <button
+            <motion.button
         onClick={toggleDarkMode}
-        className="absolute top-4 right-4 p-3 bg-gray-800 text-white rounded-full hover:bg-gray-600 transition-all duration-300"
+        className="fixed top-2 right-4 p-2  dark:bg-gray-900 text-white rounded-full transition z-50 text-2xl "
+        whileHover={{ 
+          scale: 1.2,
+          transition: { duration: 0.2 }
+        }}
       >
-        {darkMode ? '🌞 Light Mode' : '🌙 Dark Mode'}
-      </button>
+        <div
+            className={` ${
+              darkMode ? " text-white" : " text-black"
+            }`}
+          >
+        {darkMode ? <FaSun /> : <FaMoon />}
+        </div>
+            </motion.button>
 
-      {/* Features Section */}
-      <section className="py-20 px-6 bg-white dark:bg-gray-900 text-center dark:text-white">
-        <h2 className="text-4xl font-bold mb-12 bg-gradient-to-r from-green-700 to-indigo-500 text-transparent bg-clip-text">
-          Core Features
-        </h2>
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 max-w-6xl mx-auto">
-          {features.map((feature, index) => (
-            <motion.div
-              key={index}
-              className="bg-gray-100 dark:bg-gray-800 rounded-xl p-6 text-left shadow-lg hover:shadow-xl transition-all duration-500 transform hover:rotate-6 hover:scale-105"
-              onHoverStart={() => handleFeatureHover(index)}
-              whileHover={{
-                scale: 1.1,
-                rotate: 10,
-                backgroundColor: '#05C8D9',
-                color: '#fff',
-                transition: { duration: 0.4 }
-              }}
+      {/* Navigation */}
+      <nav className="fixed w-full bg-white dark:bg-gray-900 shadow-md z-40">
+        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+          <a href="#" className="flex items-center text-2xl font-bold text-orange-600 dark:text-orange-400">
+            <FaCalendarAlt className="text-orange-500 mr-2" />
+            Event Easy
+          </a>
+          
+          {/* Search Bar - Integrated into Nav */}
+          <motion.div 
+            className="hidden md:flex flex-1 mx-6 max-w-xl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
+            <form 
+              onSubmit={handleSearch}
+              className="flex w-full border border-gray-300 dark:border-gray-700 rounded-full overflow-hidden shadow-sm bg-white dark:bg-gray-800"
             >
-              <div className="text-gray-800 dark:text-white flex items-center justify-start">
-                {feature.icon}
+              <div className="flex items-center px-4 text-gray-500 dark:text-gray-400">
+                <FaSearch className="w-4 h-4" />
               </div>
-              <motion.h3
-                className="text-xl font-semibold mb-2 mt-2 text-indigo-700 dark:text-indigo-300"
-                variants={pixelVariants}
-                whileHover={{
-                  textShadow: '0 0 5px #fff',
-                  transition: { duration: 0.3 }
-                }}
+              <input
+                type="text"
+                placeholder="Search events..."
+                className="w-full py-2 px-2 text-sm bg-transparent text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <div className="w-px bg-gray-300 dark:bg-gray-600 my-2"></div>
+              <div className="flex items-center px-3 text-gray-500 dark:text-gray-400">
+                <FaMapMarker className="w-4 h-4 mr-2" />
+                <input
+                  type="text"
+                  placeholder="Location"
+                  className="bg-transparent outline-none text-sm w-24 text-gray-700 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
+                  value={locationQuery}
+                  onChange={(e) => setLocationQuery(e.target.value)}
+                />
+              </div>
+              <button 
+                type="submit"
+                className="bg-orange-500 hover:bg-orange-600 text-white px-4 transition-all flex items-center justify-center"
               >
-                {feature.title}
-              </motion.h3>
-              <motion.p
-                className="text-sm text-gray-600 dark:text-gray-400"
-                whileHover={{ color: '#000', transition: { duration: 0.5 } }}
-              >
-                {feature.description}
-              </motion.p>
-            </motion.div>
-          ))}
+                <FaSearch className="w-4 h-4" />
+              </button>
+            </form>
+          </motion.div>
+
+          <div className="hidden md:flex space-x-6 mr-16">
+            <a href="#features" className="font-medium hover:text-orange-600 dark:hover:text-orange-400 transition">Features</a>
+            <a href="#events" className="font-medium hover:text-orange-600 dark:hover:text-orange-400 transition">Events</a>
+            <a href="#how-it-works" className="font-medium hover:text-orange-600 dark:hover:text-orange-400 transition">How It Works</a>
+            <a href="#testimonials" className="font-medium hover:text-orange-600 dark:hover:text-orange-400 transition">Testimonials</a>
+          </div>
+
+          <button className="md:hidden text-2xl text-gray-600 dark:text-gray-300">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </nav>
+
+      {/* Hero Section - Keep all existing hero section code */}
+      <section className="relative h-screen flex items-center justify-center text-center text-white">
+        <div className="absolute inset-0 bg-black/30 dark:bg-black/50"></div>
+        <motion.div 
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${images[bgImage]})` }}
+          key={bgImage}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.5 }}
+        />
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.h1
+            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-lg"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            Discover Amazing Events Near You
+          </motion.h1>
+          <motion.p 
+            className="text-xl md:text-2xl max-w-3xl mx-auto mb-8 text-blue-100 dark:text-blue-200"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
+          >
+            Event Easy connects you with the best concerts, workshops, sports games, and more in your area.
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+            className="flex flex-col sm:flex-row justify-center gap-4"
+          >
+            <a 
+              href="#" 
+              className="bg-white text-orange-600 px-8 py-3 rounded-full font-bold hover:bg-gray-100 transition shadow-lg"
+            >
+              Find Events
+            </a>
+            <a 
+              href="#" 
+              className="bg-orange-500 text-white px-8 py-3 rounded-full font-bold hover:bg-orange-600 transition shadow-lg"
+            >
+              Organize Event
+            </a>
+          </motion.div>
         </div>
       </section>
 
-       {/* Benefits Section */}
-       <section>
-        {(() => {
-          const [pos, setPos] = React.useState({ x: 0, y: 0 });
-
-          React.useEffect(() => {
-            const move = (e) => setPos({ x: e.clientX, y: e.clientY });
-            window.addEventListener('mousemove', move);
-            return () => window.removeEventListener('mousemove', move);
-          }, []);
-
-          return (
-            <div className="relative py-16 px-4 bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-blue-900 dark:to-indigo-800 text-gray-800 dark:text-white text-center overflow-hidden">
-              {/* Cursor Bubble */}
-              <div
-                className="absolute w-12 h-12 bg-indigo-500 opacity-25 rounded-full pointer-events-none transition-transform duration-100"
-                style={{ left: `${pos.x}px`, top: `${pos.y}px`, transform: 'translate(-50%, -50%)' }}
-              />
-
-              <h2 className="text-4xl font-bold mb-4 pixel-dance">Why Event-Easy?</h2>
-              <p className="text-lg max-w-xl mx-auto mb-8">Plan smart, track real-time, stress less.</p>
-
-              <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                {['Easy Management', 'Instant Analytics'].map((title, i) => (
-                  <motion.div
-                    key={i}
-                    whileHover={{
-                      scale: 1.05,
-                      rotate: i % 2 === 0 ? 3 : -3,
-                      backgroundColor: '#05C8D9',
-                      color: '#fff',
-                      transition: { duration: 0.3 },
-                    }}
-                    className="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg"
-                  >
-                    <h3 className="text-xl font-semibold mb-2">{title}</h3>
-                    <p className="text-sm">
-                      {i === 0
-                        ? 'Handle events like a boss from start to finish.'
-                        : 'Know what’s popping — instantly.'}
-                    </p>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* Floating Blobs */}
-              <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-0">
-                <div className="absolute w-4 h-4 bg-pink-400 rounded-full top-12 left-16 animate-float-slow"></div>
-                <div className="absolute w-6 h-6 bg-yellow-300 rounded-full bottom-12 right-12 animate-float-medium"></div>
-              </div>
-
-              <style jsx>{`
-                @keyframes pixelDance {
-                  0% { background-position: 0% 50%; }
-                  50% { background-position: 100% 50%; }
-                  100% { background-position: 0% 50%; }
-                }
-                .pixel-dance {
-                  background: linear-gradient(90deg, red, lime, blue, fuchsia, cyan, yellow);
-                  background-size: 600% 600%;
-                  -webkit-background-clip: text;
-                  -webkit-text-fill-color: transparent;
-                  animation: pixelDance 3s ease infinite;
-                }
-                @keyframes float-slow {
-                  0%, 100% { transform: translateY(0); }
-                  50% { transform: translateY(-8px); }
-                }
-                .animate-float-slow {
-                  animation: float-slow 5s ease-in-out infinite;
-                }
-                @keyframes float-medium {
-                  0%, 100% { transform: translateY(0); }
-                  50% { transform: translateY(-15px); }
-                }
-                .animate-float-medium {
-                  animation: float-medium 7s ease-in-out infinite;
-                }
-              `}</style>
-            </div>
-          );
-        })()}
+      {/* Features Section */}
+      <section id="features" className="py-20 bg-white dark:bg-gray-900">
+        <div className="container mx-auto px-4">
+          <motion.h2 
+            className="text-3xl md:text-4xl font-bold text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            Why Choose Event Easy
+          </motion.h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <motion.div
+                key={index}
+                className="bg-gray-50 dark:bg-gray-800 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1, duration: 0.6 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -5 }}
+              >
+                <div className="text-pink-800 dark:text-purple-400 mb-4">
+                  {feature.icon}
+                </div>
+                <h3 className="text-xl font-bold mb-3 text-red-500 dark:text-indigo-300">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {feature.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
       </section>
 
-      {/* Screenshot / Demo Section */}
-      <section className="py-20 px-6 bg-white dark:bg-gray-800 text-center dark:text-gray-100">
-        <h2 className="text-4xl font-bold text-indigo-600 dark:text-indigo-400 mb-10">See It in Action</h2>
-        <motion.img
-          src="https://images.unsplash.com/photo-1604882733123-68b3690b40f5"
-          alt="Event dashboard"
-          className="mx-auto rounded-xl shadow-lg"
-          whileHover={{ scale: 1.05, rotate: 2, transition: { duration: 0.3 } }}
-        />
+      {/* How It Works Section */}
+      <section id="how-it-works" className="py-20 bg-gray-50 dark:bg-gray-800">
+        <div className="container mx-auto px-4">
+          <motion.h2 
+            className="text-3xl md:text-4xl font-bold text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            How It Works
+          </motion.h2>
+          <div className="flex flex-col md:flex-row justify-between gap-8 max-w-5xl mx-auto">
+            {[
+              {
+                title: "Create Your Profile",
+                description: "Tell us your interests and preferences to get personalized recommendations."
+              },
+              {
+                title: "Browse Events",
+                description: "Explore thousands of events near you or search by category, date, or location."
+              },
+              {
+                title: "Book Tickets",
+                description: "Secure your spot with our easy checkout process and mobile tickets."
+              }
+            ].map((step, index) => (
+              <motion.div
+                key={index}
+                className="text-center flex-1"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1, duration: 0.6 }}
+                viewport={{ once: true }}
+              >
+                <div className="w-16 h-16 bg-orange-800 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6">
+                  {index + 1}
+                </div>
+                <h3 className="text-xl font-bold mb-3">{step.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400">{step.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Events Section */}
+      <section id="events" className="py-20 bg-white dark:bg-gray-900">
+        <div className="container mx-auto px-4">
+          <motion.h2 
+            className="text-3xl md:text-4xl font-bold text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            Popular Events Near You
+          </motion.h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                image: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                date: "June 15, 2023",
+                title: "Summer Music Festival",
+                location: "Central Park, New York",
+                price: "49.99"
+              },
+              {
+                image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                date: "June 22, 2023",
+                title: "Tech Conference 2023",
+                location: "Convention Center, San Francisco",
+                price: "199.99"
+              },
+              {
+                image: "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                date: "July 5, 2023",
+                title: "Food & Wine Expo",
+                location: "Downtown, Chicago",
+                price: "29.99"
+              }
+            ].map((event, index) => (
+              <motion.div
+                key={index}
+                className="rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1, duration: 0.6 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -5 }}
+              >
+                <img src={event.image} alt={event.title} className="w-full h-48 object-cover" />
+                <div className="p-6">
+                  <div className="flex items-center text-purple-600 dark:text-purple-400 mb-3">
+                    <FiCalendar className="mr-2" />
+                    <span>{event.date}</span>
+                  </div>
+                  <h3 className="text-xl font-bold mb-3">{event.title}</h3>
+                  <div className="flex items-center text-gray-600 dark:text-gray-400 mb-4">
+                    <FiMapPin className="mr-2" />
+                    <span>{event.location}</span>
+                  </div>
+                  <div className="text-green-600 dark:text-green-400 font-bold mb-5">From ${event.price}</div>
+                  <a href="#" className="block w-full bg-teal-500 text-orange-900 text-center py-2 rounded-lg font-medium hover:bg-teal-600 transition">
+                    Book Now
+                  </a>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+          <motion.div
+            className="text-center mt-12"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <a href="#" className="inline-block bg-orange-600 text-white px-8 py-3 rounded-full font-bold hover:bg-orange-700 transition shadow-lg">
+              View All Events
+            </a>
+          </motion.div>
+        </div>
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 px-6 bg-indigo-50 dark:bg-indigo-900 text-center">
-        <h2 className="text-4xl font-bold text-indigo-700 dark:text-indigo-400 mb-8">
-          What Our Users Say
-        </h2>
-        <div className="flex flex-wrap justify-center gap-10">
-          <motion.div
-            className="bg-white dark:bg-gray-700 p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-500"
-            whileHover={{ scale: 1.05, y: -10, backgroundColor: 'rgb(30, 64, 175)', color: '#fff', transition: { duration: 0.3 } }}
+      <section id="testimonials" className="py-20 bg-gray-50 dark:bg-gray-800">
+        <div className="container mx-auto px-4">
+          <motion.h2 
+            className="text-3xl md:text-4xl font-bold text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
           >
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              "Event-Easy transformed our entire event experience. From start to finish, we were able to stay organized and track every detail."
-            </p>
-            <div className="mt-4 font-semibold text-indigo-800 dark:text-indigo-300">John Doe</div>
-          </motion.div>
-          <motion.div
-            className="bg-white dark:bg-gray-700 p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-500"
-            whileHover={{ scale: 1.05, y: -10, backgroundColor: 'rgb(30, 64, 175)', color: '#fff', transition: { duration: 0.3 } }}
-          >
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              "An amazing platform that simplified the event planning process for our team. Everything was more streamlined and efficient."
-            </p>
-            <div className="mt-4 font-semibold text-indigo-800 dark:text-indigo-300">Jane Smith</div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="py-20 px-6 bg-gray-50 dark:bg-gray-900 text-center">
-        <h2 className="text-4xl font-bold text-indigo-600 dark:text-indigo-300 mb-8">
-          Frequently Asked Questions
-        </h2>
-        <div className="max-w-3xl mx-auto text-left">
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-indigo-700 dark:text-indigo-300">How does the event planning process work?</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Event-Easy allows you to create, manage, and track all aspects of your event, from start to finish, in one simple platform.</p>
-          </div>
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-indigo-700 dark:text-indigo-300">Can I track event performance?</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Yes! Event-Easy provides instant analytics and tracking tools to help you measure the success of your event.</p>
+            What Our Users Say
+          </motion.h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={index}
+                className="bg-white dark:bg-gray-700 p-8 rounded-xl shadow-md"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1, duration: 0.6 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -5 }}
+              >
+                <p className="italic text-gray-700 dark:text-gray-300 mb-6">"{testimonial.quote}"</p>
+                <div className="font-semibold text-indigo-800 dark:text-indigo-300">
+                  {testimonial.name}
+                </div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  {testimonial.role}
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Contact/Newsletter Section */}
-      <section className="py-20 px-6 bg-gradient-to-r from-blue-400 to-indigo-600 text-center text-white">
-        <h2 className="text-4xl font-bold mb-8">Stay Informed</h2>
-        <p className="text-xl mb-8">Sign up for our newsletter to get the latest updates and tips.</p>
-        <Button className="bg-white text-indigo-600 hover:bg-gray-200 text-lg px-8 py-3 rounded-full shadow-lg relative overflow-hidden">
-          Subscribe Now
-        </Button>
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-r from-orange-600 to-pink-600 text-white">
+        <div className="container mx-auto px-4 text-center">
+          <motion.h2 
+            className="text-3xl md:text-4xl font-bold mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            Ready to Discover Your Next Adventure?
+          </motion.h2>
+          <motion.p 
+            className="text-xl mb-8 max-w-2xl mx-auto"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            Join over 100,000 people who use Event Easy to find the best events in their area.
+          </motion.p>
+          <motion.a
+            href="#"
+            className="inline-block bg-white text-blue-600 px-8 py-3 rounded-full font-bold hover:bg-gray-100 transition shadow-lg"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+            viewport={{ once: true }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Sign Up Free
+          </motion.a>
+        </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-6 px-6 bg-gray-800 text-center text-white">
-        <p>&copy; 2025 Event-Easy. All Rights Reserved.</p>
+      <footer className="py-12 bg-gray-800 text-white">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <h3 className="text-xl font-bold mb-4 flex items-center">
+                <FaCalendarAlt className="text-pink-500 mr-2" />
+                Event Easy
+              </h3>
+              <p className="text-gray-400">Making event discovery simple, personalized, and fun.</p>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold mb-4">Explore</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="text-gray-400 hover:text-white transition">All Events</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition">Popular Events</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition">Nearby Events</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold mb-4">Organizers</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="text-gray-400 hover:text-white transition">Create Event</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition">Pricing</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition">Support</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold mb-4">Company</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="text-gray-400 hover:text-white transition">About Us</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition">Contact</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition">Privacy Policy</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-gray-700 pt-8 text-center text-gray-400">
+            <p>&copy; {new Date().getFullYear()} Event Easy. All rights reserved.</p>
+          </div>
+        </div>
       </footer>
+
     </div>
   );
 };
 
-export default LandingPage;
+export default EventEasyLanding;
