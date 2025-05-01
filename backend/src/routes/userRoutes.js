@@ -1,3 +1,4 @@
+
 const express = require('express');
 const { getUserDetails} = require('../controllers/userDetails');
 const userAuth = require('../middlewares/userAuth');

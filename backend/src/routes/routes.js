@@ -1,3 +1,4 @@
+
 const express = require("express");
 const { registerUser, loginUser, logoutUser, sendVerifyOtp, verifyOtp, isAuthenticated } = require("../controllers/userController");
 const userAuth = require("../middlewares/userAuth");
@@ -13,3 +14,4 @@ router.post("/verify-otp", userAuth, verifyOtp); // Assuming you want to use the
 router.get("/is-auth", userAuth, isAuthenticated)
 
 module.exports = router;
+

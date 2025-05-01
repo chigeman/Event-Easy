@@ -21,6 +21,7 @@ const registerUser = async (req, res) => {
       password: hashedPassword,
     });
 
+
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
@@ -187,3 +188,4 @@ const isAuthenticated = async (req, res) => {
 }
 
 module.exports = { registerUser ,loginUser ,logoutUser, sendVerifyOtp, verifyOtp ,isAuthenticated };
+
