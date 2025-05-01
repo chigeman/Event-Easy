@@ -1,13 +1,53 @@
 import { Link } from "react-router-dom";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
-import bg_1 from "../assets/bg_1.jpg"; // Feel free to add more images
+import bg_1 from "../assets/bg_1.jpg"; // You can add more images to bgImages if needed
 
 export default function SignUpAttendee() {
   const [hovered, setHovered] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [currentBg, setCurrentBg] = useState(0);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+
+    axios
+      .post("http://localhost:5000/Event-Easy/attendee", {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      })
+      .then((response) => {
+        console.log("Success:", response.data);
+        alert("Signup successful!");
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("Something went wrong!");
+      });
+  };
 
   const bgImages = [bg_1];
   const headingControls = useAnimation();
@@ -75,34 +115,54 @@ export default function SignUpAttendee() {
             Create an attendee account and never miss a moment of excitement!
           </motion.p>
 
-          <input
-            placeholder="Full Name"
-            type="text"
-            className="mb-4 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 text-sm"
-          />
-          <input
-            placeholder="Email Address"
-            type="email"
-            className="mb-4 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 text-sm"
-          />
-          <input
-            placeholder="Password"
-            type="password"
-            className="mb-4 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 text-sm"
-          />
-          <input
-            placeholder="Confirm Password"
-            type="password"
-            className="mb-6 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 text-sm"
-          />
+          <form onSubmit={handleSubmit}>
+            <input
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Full Name"
+              type="text"
+              className="mb-4 px-4 py-3 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-pink-400 text-sm"
+              required
+            />
+            <input
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Email Address"
+              type="email"
+              className="mb-4 px-4 py-3 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-pink-400 text-sm"
+              required
+            />
+            <input
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Password"
+              type="password"
+              className="mb-4 px-4 py-3 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-pink-400 text-sm"
+              required
+            />
+            <input
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder="Confirm Password"
+              type="password"
+              className="mb-6 px-4 py-3 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-pink-400 text-sm"
+              required
+            />
 
-          <motion.button
-            className="w-full bg-pink-500 hover:bg-pink-600 text-white px-4 py-3 rounded-lg font-semibold shadow-md"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Sign Up
-          </motion.button>
+            <motion.button
+              type="submit"
+              className="w-full bg-pink-500 hover:bg-pink-600 text-white px-4 py-3 rounded-lg font-semibold shadow-md"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Sign Up
+            </motion.button>
+          </form>
+
           <div className="text-center text-sm my-4 text-gray-500">
             — or sign up using —
           </div>
@@ -121,10 +181,11 @@ export default function SignUpAttendee() {
 
           <p className="mt-6 text-sm text-center text-gray-600">
             Already have an account?{" "}
-            <Link to="/Login_Attendee">
-            <a href="#" className="text-pink-600 hover:underline">
+            <Link
+              to="/Login_Attendee"
+              className="text-pink-600 hover:underline"
+            >
               Log in here
-            </a>
             </Link>
           </p>
         </div>

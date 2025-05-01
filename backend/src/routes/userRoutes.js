@@ -1,9 +1,23 @@
-const express = require("express");
-const { registerUser } = require("../controllers/userController");
 
-const router = express.Router();
+const express = require('express');
+const { getUserDetails} = require('../controllers/userDetails');
+const userAuth = require('../middlewares/userAuth');
 
-// POST /api/users/register
-router.post("/register", registerUser);
+const userRouter = express.Router();
 
-module.exports = router;
+// Route to get all users
+userRouter.get('/data', userAuth, getUserDetails);
+
+// // Route to get a user by ID
+// userRouter.get('/:id', getUserById);
+
+// // Route to create a new user
+// userRouter.post('/', createUser);
+
+// // Route to update a user by ID
+// userRouter.put('/:id', updateUser);
+
+// // Route to delete a user by ID
+// userRouter.delete('/:id', deleteUser);
+
+module.exports = userRouter;
