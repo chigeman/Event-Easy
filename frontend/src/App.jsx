@@ -11,7 +11,7 @@ import Login_att from './Sections/Login_att'; // Ensure this is the correct path
 export default function App() {
   return (
     <div>
-      <NavBar />  {/* Make sure NavBar is included */}
+       {/* <NavBar />  */}
       
       {/* Use Routes and Route to define paths correctly */}
       <Routes>

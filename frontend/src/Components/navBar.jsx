@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
+
 import { Menu, X, Moon, Sun, Search, MapPin } from 'lucide-react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 

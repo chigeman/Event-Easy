@@ -115,7 +115,7 @@ const EventEasyLanding = () => {
       {/* Dark Mode Toggle */}
             <motion.button
         onClick={toggleDarkMode}
-        className="fixed top-2 right-4 p-2  dark:bg-gray-900 text-white rounded-full transition z-50 text-2xl "
+        className="fixed top-2 right-8 p-2  dark:bg-gray-900 text-white rounded-full transition z-50 text-2xl "
         whileHover={{ 
           scale: 1.2,
           transition: { duration: 0.2 }
