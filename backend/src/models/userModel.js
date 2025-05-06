@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
-
 const jwt = require("jsonwebtoken");
-
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -22,7 +20,6 @@ const userSchema = new mongoose.Schema({
     required: [true, "Password is required"],
     minlength: [6, "Password must be at least 6 characters"],
   },
-
   verifyOtpExpireAt: {
     type: Number,
     default: 0, // OTP valid for 24 hours
