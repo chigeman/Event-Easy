@@ -4,21 +4,23 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import bg_1 from "../assets/bg_1.jpg";
 import { appContent } from "../context/AppContext";
+import { FaCalendarAlt, FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function OrganizerLogin() {
   const { setIsLoggedin, getUserData } = useContext(appContent);
   const [hovered, setHovered] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [currentBg, setCurrentBg] = useState(0);
   const headingControls = useAnimation();
   const navigate = useNavigate();
-  const [state, setState] = useState("Sign In"); // Default state
+  const [state, setState] = useState("Sign In");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
-    confirmPassword: "", // add confirmPassword field for validation
+    confirmPassword: "",
   });
 
   const handleChange = (e) => {
@@ -31,61 +33,48 @@ export default function OrganizerLogin() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       axios.defaults.withCredentials = true;
 
       if (state === "Sign Up") {
-        // Step 1: Check if passwords match
         if (formData.password !== formData.confirmPassword) {
           alert("Passwords do not match!");
           return;
         }
 
-        // Step 2: Explicitly set the role to "organizer"
-        const role = "organizer"; // Explicitly defining the role
-
-        // Step 3: Send registration request for organizer
         const { data } = await axios.post("http://localhost:5000/Event-Easy/organizer/register", {
           name: formData.name,
           email: formData.email,
           password: formData.password,
-          role: role, // Explicitly passing the role
+          role: "organizer",
         });
 
-        // Step 4: Check if user was created successfully
         if (data.message === "User created successfully") {
           alert("Signup successful!");
           setIsLoggedin(true);
 
-          // If the backend sends a token after signup, store it like login
           if (data.token) {
-            localStorage.setItem("token", data.token); // Save the token
-            axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`; // Set token in axios headers
+            localStorage.setItem("token", data.token);
+            axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
           }
 
-          await getUserData(); // fetch user data after registration
-
-          // Step 5: Send OTP for email verification
-          await sendVerificationOtp(formData.email);  // Ensure OTP is sent here
-          navigate("/email-verify");   // Redirect to email verification page
+          await getUserData();
+          await sendVerificationOtp(formData.email);
+          navigate("/email-verify");
         } else {
           alert("Signup failed: " + data.message);
         }
-
-        return; // stop here, don't proceed to login below
+        return;
       }
 
-      // Login logic (Sign In)
+      // Login logic
       const response = await axios.post(
-        "http://localhost:5000/Event-Easy/attendee/login",
+        "http://localhost:5000/Event-Easy/organizer/login",
         formData,
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
 
-      if (response.data && response.data.token) {
+      if (response.data?.token) {
         const token = response.data.token;
         localStorage.setItem("token", token);
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -98,14 +87,15 @@ export default function OrganizerLogin() {
 
     } catch (error) {
       console.error("Auth error:", error);
-      if (error.response && error.response.data) {
-        alert(`Server Error: ${error.response.data.message || "Unknown error"}`);
+      if (error.response?.data) {
+        alert(`Error: ${error.response.data.message || "Unknown error"}`);
       } else {
         alert("Connection issue. Is the server running?");
       }
     }
   };
 
+  // Animation effects
   useEffect(() => {
     if (hovered) {
       headingControls.start({
@@ -125,21 +115,46 @@ export default function OrganizerLogin() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentBg((prev) => (prev + 1) % 1);
-    }, 7000);
-    return () => clearInterval(interval);
-  }, []);
+  // Custom cursor with Event Easy theme
+  const CustomCursor = () => (
+    <>
+      <motion.div
+        className="fixed w-8 h-8 rounded-full pointer-events-none z-50 mix-blend-difference"
+        style={{
+          left: mousePos.x - 16,
+          top: mousePos.y - 16,
+          background: 'radial-gradient(circle, rgba(236,72,153,0.8) 0%, rgba(124,58,237,0.6) 70%)',
+          boxShadow: '0 0 15px rgba(236,72,153,0.5), 0 0 30px rgba(124,58,237,0.3)'
+        }}
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.8, 1, 0.8],
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      />
+      <motion.div
+        className="fixed w-4 h-4 rounded-full pointer-events-none z-50 mix-blend-difference"
+        style={{
+          left: mousePos.x - 8,
+          top: mousePos.y - 8,
+          background: 'white',
+          boxShadow: '0 0 10px white'
+        }}
+      />
+    </>
+  );
 
   const sendVerificationOtp = async (email) => {
     try {
       axios.defaults.withCredentials = true;
 
-      // Send the email to the backend to trigger OTP
       const { data } = await axios.post(
-        'http://localhost:5000/Event-Easy/attendee/send-verify-otp',
-        { email },  // Send the email as part of the body
+        'http://localhost:5000/Event-Easy/organizer/send-verify-otp',
+        { email },
         { withCredentials: true }
       );
 
@@ -159,189 +174,184 @@ export default function OrganizerLogin() {
 
   return (
     <motion.div
-      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-700 to-purple-800 text-gray-800 px-2"
+      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-300 text-white px-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
     >
-      <div className="bg-white rounded-2xl shadow-2xl grid grid-cols-2 w-[90vw] max-w-[750px] h-[85vh] overflow-hidden relative">
-        <motion.div
-          className="absolute w-16 h-16 rounded-full bg-gradient-to-r from-purple-400 to-pink-500 opacity-20 pointer-events-none"
-          style={{
-            left: mousePos.x - 30,
-            top: mousePos.y - 30,
-            position: "fixed",
-          }}
-        />
-
-        {/* Left Side - Login Form */}
-        <div className="flex flex-col justify-center px-6 text-xs md:text-sm">
-          <div>
-            <h2>
-              {state === "Sign Up" ? (
-                <motion.h1
-                  className="text-2xl md:text-3xl font-bold mb-2 text-gray-800"
-                  animate={headingControls}
-                  onHoverStart={() => setHovered(true)}
-                  onHoverEnd={() => setHovered(false)}
-                  whileHover={{ color: "#ec4899" }}
-                >
-                  Join the Event Organizer Family!
-                </motion.h1>
-              ) : (
-                <motion.h1
-                  className="text-2xl md:text-3xl font-bold mb-2 text-gray-800"
-                  animate={headingControls}
-                  onHoverStart={() => setHovered(true)}
-                  onHoverEnd={() => setHovered(false)}
-                  whileHover={{ color: "#6366f1" }}
-                >
-                  Welcome Back, Organizer!
-                </motion.h1>
-              )}
-            </h2>
-            <p>
-              {state === "Sign Up" ? (
-                <motion.p
-                  className="mb-4 text-gray-600"
-                  whileHover={{ scale: 1.02 }}
-                >
-                  Create your organizer account and start managing amazing events!
-                </motion.p>
-              ) : (
-                <motion.p
-                  className="mb-4 text-gray-600"
-                  whileHover={{ scale: 1.02 }}
-                >
-                  Log in to your account and manage your events.
-                </motion.p>
-              )}
-            </p>
+      <CustomCursor />
+      
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden w-full max-w-4xl h-[85vh] md:h-[75vh] flex flex-col md:flex-row relative">
+        {/* Left Side - Form */}
+        <div className="flex-1 p-6 py-8 md:p-8 flex flex-col justify-center">
+          <div className="flex items-center mb-6">
+            <FaCalendarAlt className="text-orange-500 text-2xl mr-2" />
+            <h1 className="text-2xl items-center font-bold text-orange-600 dark:text-orange-400">Event Easy</h1>
           </div>
 
-          <form onSubmit={handleSubmit}>
-            {(state === "Sign In" || state === "Sign Up") && (
-              <>
-                {state === "Sign Up" && (
-                  <input
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="Full Name"
-                    type="text"
-                    className="mb-3 px-3 py-2 border rounded-md w-full focus:outline-none focus:ring-2 focus:ring-pink-400 text-xs"
-                    required
-                  />
-                )}
+          <div className="mb-8">
+            <motion.h2
+              className="text-3xl font-bold mb-2 text-gray-800 dark:text-white"
+              animate={headingControls}
+              onHoverStart={() => setHovered(true)}
+              onHoverEnd={() => setHovered(false)}
+              whileHover={{ color: state === "Sign Up" ? "#ec4899" : "#6366f1" }}
+            >
+              {state === "Sign Up" ? "Join the Event Organizer Family!" : "Welcome Back, Organizer!"}
+            </motion.h2>
+            <motion.p 
+              className="text-gray-600 dark:text-gray-300"
+              whileHover={{ scale: 1.02 }}
+            >
+              {state === "Sign Up" 
+                ? "Create your organizer account and start managing amazing events!" 
+                : "Log in to your account and manage your events."}
+            </motion.p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {state === "Sign Up" && (
+              <div className="relative">
                 <input
-                  name="email"
-                  value={formData.email}
+                  name="name"
+                  value={formData.name}
                   onChange={handleChange}
-                  placeholder="Email Address"
-                  type="email"
-                  className={`mb-3 px-3 py-2 border rounded-md w-full focus:outline-none focus:ring-2 ${
-                    state === "Sign Up" ? "focus:ring-pink-400" : "focus:ring-indigo-500"
-                  } text-xs`}
+                  placeholder="Full Name"
+                  type="text"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:bg-gray-700 dark:text-white"
                   required
                 />
-                <input
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="Password"
-                  type="password"
-                  className={`mb-3 px-3 py-2 border rounded-md w-full focus:outline-none focus:ring-2 ${
-                    state === "Sign Up" ? "focus:ring-pink-400" : "focus:ring-indigo-500"
-                  } text-xs`}
-                  required
-                />
-                {state === "Sign Up" && (
-                  <input
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    placeholder="Confirm Password"
-                    type="password"
-                    className="mb-4 px-3 py-2 border rounded-md w-full focus:outline-none focus:ring-2 focus:ring-pink-400 text-xs"
-                    required
-                  />
-                )}
-              </>
+              </div>
             )}
 
-            <motion.a
-              href="#"
-              className="text-xs text-indigo-600 hover:underline mb-4 inline-block"
-              whileHover={{ color: "#4f46e5" }}
-            >
-              Forgot your password?
-            </motion.a>
+            <div className="relative">
+              <input
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Email Address"
+                type="email"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:bg-gray-700 dark:text-white"
+                required
+              />
+            </div>
+
+            <div className="relative">
+              <input
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Password"
+                type={showPassword ? "text" : "password"}
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:bg-gray-700 dark:text-white pr-10"
+                required
+              />
+              <button
+                type="button"
+                className="absolute right-4 top-4 text-gray-500 dark:text-gray-400"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
+
+            {state === "Sign Up" && (
+              <div className="relative">
+                <input
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="Confirm Password"
+                  type={showConfirmPassword ? "text" : "password"}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:bg-gray-700 dark:text-white pr-10"
+                  required
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-3 text-gray-500 dark:text-gray-400"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
+            )}
 
             <motion.button
               type="submit"
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-md font-semibold text-xs"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-semibold transition-all"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
               {state}
             </motion.button>
+
+            {state === "Sign In" && (
+              <div className="text-center">
+                <motion.a
+                  href="#"
+                  className="text-sm text-orange-500 hover:underline"
+                  whileHover={{ color: "#ea580c" }}
+                >
+                  Forgot password?
+                </motion.a>
+              </div>
+            )}
           </form>
 
-          <div className="text-center text-xs my-3 text-gray-500">
-            — Or {state} using —
+          <div className="my-6 flex items-center">
+            <div className="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
+            <span className="px-4 text-gray-500 dark:text-gray-400 text-sm">OR</span>
+            <div className="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
           </div>
 
-          {/* Google Auth Button + Toggle */}
-          <div>
-            <motion.button
-              whileHover={{ scale: 1.02, backgroundColor: "#f3f4f6" }}
-              className="flex items-center justify-center w-full border px-3 py-2 rounded-md font-medium text-xs"
-            >
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png"
-                alt="Google Logo"
-                className="w-4 h-4 mr-2"
-              />
-              {state} with Google
-            </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="flex items-center justify-center w-full border border-gray-300 dark:border-gray-600 px-4 py-3 rounded-lg font-medium text-gray-700 dark:text-gray-300"
+          >
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png"
+              alt="Google Logo"
+              className="w-5 h-5 mr-2"
+            />
+            {state} with Google
+          </motion.button>
 
-            <p className="mt-4 text-xs text-center text-gray-600">
-              {state === "Sign Up" ? "Already have an account?" : "New to events?"}{" "}
-              <span
-                className="text-indigo-600 hover:underline cursor-pointer"
-                onClick={() =>
-                  setState(state === "Sign In" ? "Sign Up" : "Sign In")
-                }
-              >
-                {state === "Sign In" ? "Sign-Up here" : "Login here"}
-              </span>
-            </p>
+          <div className="mt-6 text-center text-sm">
+            <span className="text-gray-600 dark:text-gray-400">
+              {state === "Sign Up" ? "Already have an account?" : "New to Event Easy?"}{" "}
+            </span>
+            <motion.button
+              onClick={() => setState(state === "Sign In" ? "Sign Up" : "Sign In")}
+              className="text-orange-500 font-medium hover:underline"
+              whileHover={{ color: "#ea580c" }}
+            >
+              {state === "Sign In" ? "Sign Up" : "Sign In"}
+            </motion.button>
           </div>
         </div>
 
-        {/* Right Side - Background Image & Quote */}
-        <motion.div
-          className="relative h-full w-full"
-          whileHover={{ scale: 1.01 }}
-          transition={{ duration: 1 }}
-        >
+        {/* Right Side - Image */}
+        <div className="hidden md:block flex-1 relative bg-gradient-to-br from-purple-900 to-indigo-900">
           <motion.img
             src={bg_1}
             alt="Event Background"
-            className="object-cover w-full h-full"
-            whileHover={{ scale: 1.03 }}
-            transition={{ duration: 0.6 }}
+            className="absolute inset-0 w-full h-full object-cover opacity-80"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.8 }}
+            transition={{ duration: 1 }}
           />
-          <motion.p
-            className="absolute bottom-2 left-2 right-2 text-white text-xs text-center bg-black bg-opacity-30 px-2 py-1 rounded"
-            whileHover={{
-              x: [0, 5, -5, 0],
-              transition: { duration: 1 },
-            }}
-          >
-            Organize events with ease, success, and fun! 🎉
-          </motion.p>
-        </motion.div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-8">
+            <motion.p
+              className="text-white text-xl font-medium"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.8 }}
+            >
+              "Organize events with ease, success, and fun! 🎉"
+            </motion.p>
+          </div>
+        </div>
       </div>
     </motion.div>
   );
