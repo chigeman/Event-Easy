@@ -6,8 +6,12 @@ import { Menu, X, Moon, Sun, Search, MapPin } from 'lucide-react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 import { AppContent } from '../context/AppContext';
 import axios from 'axios';
+import { AppContent } from '../context/AppContext';
+import axios from 'axios';
 
 export default function AnimatedNavbar() {
+
+  const navigate = useNavigate();
 
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -34,6 +38,40 @@ export default function AnimatedNavbar() {
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
+
+  const {userData} = useContext(AppContent);
+  console.log("User data in Navbar:", userData);
+
+  const { setUserData, setIsLoggedin } = useContext(AppContent);
+
+  const logout = async () => {
+    try {
+      // Just in case
+      axios.defaults.withCredentials = true;
+
+      const response = await axios.post(
+        'http://localhost:5000/Event-Easy/Attendee/logout',
+        {},
+        { withCredentials: true }
+      );
+
+      if (response.data.message === 'Logout successful!') {
+        console.log("✅ Logout successful (message-based fallback)");
+      
+        localStorage.removeItem('token');
+        setUserData(null);
+        setIsLoggedin(false);
+      
+        setTimeout(() => {
+          navigate('/Login_Attendee');
+        }, 100);
+      } else {
+        console.error("Logout failed:", response.data.message);
+      }
+    } catch (err) {
+      console.error("🔥 Logout error:", err);
+    }
+  };
 
   const {userData} = useContext(AppContent);
   console.log("User data in Navbar:", userData);
@@ -152,6 +190,31 @@ export default function AnimatedNavbar() {
               </div>
               </>
           ) : (
+              <div className="block text-sm text-gray-700 dark:text-gray-200">
+                  <a href="/login" className="text-sm text-white hover:underline">Log In</a>
+                  <Link to="/Classify">
+                    <motion.div
+                      whileHover={{ scale: 1.1, backgroundColor: "#00ffff", color: "#000" }}
+                      className="ml-2 px-4 py-2 bg-blue-600 text-white rounded-full transition duration-300 ease-in-out"
+                    >
+                      Sign Up
+                    </motion.div>
+                  </Link>
+              </div>
+          )}
+            {userData ? (
+              <>
+              <div className="text-white text-sm font-semibold ">
+                  {userData.name}
+                  <div className='absolute  goup-hover:block bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-lg rounded-lg p-4 mt-2'>
+                    <ul className="space-y-2 list-none m-0 p-2  text-sm">
+                      {!userData.isVerified && <li className='cursor-pointer'>Verify email</li>}
+                      <li className='list-none m-0 p-2  text-sm cursor-pointer' onClick = {logout}>Logout</li>
+                    </ul>
+                  </div>
+              </div>
+              </>
+          ) : (
               <div className="flex items-center block text-sm text-gray-700 dark:text-gray-200">
                   <a href="/login" className="text-sm text-white hover:underline">Log In</a>
                   <Link to="/Classify">
@@ -202,6 +265,18 @@ export default function AnimatedNavbar() {
           >
             {darkMode ? 'Light Mode' : 'Dark Mode'}
           </button>
+          {userData ? (
+              <>
+                  {userData.name}
+              </>
+          ) : (
+              <div className="block text-sm text-gray-700 dark:text-gray-200">
+                  <a href="/login">Log In</a>
+                  <a href="/signup">Sign Up</a>
+              </div>
+          )}
+
+
           {userData ? (
               <>
                   {userData.name}
