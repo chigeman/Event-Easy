@@ -144,13 +144,13 @@ const EventEasyLanding = () => {
                 className="flex flex-col sm:flex-row justify-center gap-4"
               >
                 <Link 
-                  to="/find-events" // replace with your actual route
+                  to="/Login_Attendee" // replace with your actual route
                   className="bg-white text-orange-600 px-8 py-3 rounded-full font-bold hover:bg-gray-100 transition shadow-lg"
                 >
                   Find Events
                 </Link>
                 <Link 
-                  to="/organize-event" // replace with your actual route
+                  to="/Login_Organizer" // replace with your actual route
                   className="bg-orange-500 text-white px-8 py-3 rounded-full font-bold hover:bg-orange-600 transition shadow-lg"
                 >
                   Organize Event
