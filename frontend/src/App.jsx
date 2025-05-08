@@ -1,11 +1,12 @@
 
 import React from 'react';
-import NavBar from './Components/navBar';  // Use capitalized NavBar
+import NavBar from './Components/navBar';  
 import HomePage from "./Pages/HomePage";
 import { Route, Routes } from 'react-router-dom';
-import Classify_SU from './Pages/Classify_SU'; // Ensure this is the correct path to your Classify_SU component
-import Login_org from './Pages/Login_org'; // Ensure this is the correct path to your Login_org component
-import Login_att from './Pages/Login_att'; // Ensure this is the correct path to your Login_att component
+import Classify_SU from './Pages/Classify_SU';
+import Login_org from './Pages/Login_org'; 
+import Login_att from './Pages/Login_att'; 
+// import { DarkModeProvider } from './context/DarkModeContext';
 import EmailVerify from './Pages/EmailVerify';
 
 export default function App() {
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="/email-verify" element={<EmailVerify />} />  
 
       </Routes>
+     
     </div>
   );
 }

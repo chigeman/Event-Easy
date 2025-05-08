@@ -8,10 +8,7 @@ import { FaCalendarAlt, FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function AttendeeLogin() {
   const { setIsLoggedin, getUserData } = useContext(appContent);
-  const [hovered, setHovered] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [currentBg, setCurrentBg] = useState(0);
-  const headingControls = useAnimation();
   const navigate = useNavigate();
   const [state, setState] = useState('Sign In');
   const [showPassword, setShowPassword] = useState(false);
@@ -96,18 +93,6 @@ export default function AttendeeLogin() {
     }
   };
 
-  // Animation effects
-  useEffect(() => {
-    if (hovered) {
-      headingControls.start({
-        rotate: [0, 3, -3, 0],
-        transition: { duration: 0.5, repeat: Infinity },
-      });
-    } else {
-      headingControls.stop();
-    }
-  }, [hovered]);
-
   useEffect(() => {
     const handleMouseMove = (e) => {
       setMousePos({ x: e.clientX, y: e.clientY });
@@ -116,7 +101,7 @@ export default function AttendeeLogin() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  // Custom cursor with Event Easy theme
+  // Custom cursor with better color scheme
   const CustomCursor = () => (
     <>
       <motion.div
@@ -124,8 +109,8 @@ export default function AttendeeLogin() {
         style={{
           left: mousePos.x - 16,
           top: mousePos.y - 16,
-          background: 'radial-gradient(circle, rgba(236,72,153,0.8) 0%, rgba(124,58,237,0.6) 70%)',
-          boxShadow: '0 0 15px rgba(236,72,153,0.5), 0 0 30px rgba(124,58,237,0.3)'
+          background: 'radial-gradient(circle, rgba(251,146,60,0.8) 0%, rgba(234,88,12,0.6) 70%)',
+          boxShadow: '0 0 15px rgba(251,146,60,0.5), 0 0 30px rgba(234,88,12,0.3)'
         }}
         animate={{
           scale: [1, 1.2, 1],
@@ -151,42 +136,33 @@ export default function AttendeeLogin() {
 
   return (
     <motion.div
-      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-300 text-white px-4"
+      className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-800 px-4 py-8"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
     >
       <CustomCursor />
       
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden w-full max-w-4xl h-[85vh] md:h-[75vh] flex flex-col md:flex-row relative ">
+      <div className="bg-white dark:bg-gray-700 rounded-2xl shadow-2xl overflow-hidden w-full max-w-5xl  flex flex-col md:flex-row">
         {/* Left Side - Form */}
-        <div className="flex-1 p-6 py-8 md:p-8 flex flex-col justify-center">
-          <div className="flex items-center mb-6">
+        <div className="flex-1 p-8  flex flex-col justify-center">
+          <div className="flex items-center  mb-4">
             <FaCalendarAlt className="text-orange-500 text-2xl mr-2" />
-            <h1 className="text-2xl items-center  font-bold text-orange-600 dark:text-orange-400">Event Easy</h1>
+            <h1 className="text-2xl font-bold text-orange-600 dark:text-orange-400">Event Easy</h1>
           </div>
 
-          <div className="mb-8">
-            <motion.h2
-              className="text-3xl font-bold mb-2 text-gray-800 dark:text-white"
-              animate={headingControls}
-              onHoverStart={() => setHovered(true)}
-              onHoverEnd={() => setHovered(false)}
-              whileHover={{ color: state === "Sign Up" ? "#ec4899" : "#6366f1" }}
-            >
-              {state === "Sign Up" ? "Join the Event Vibe!" : "Welcome Back!"}
-            </motion.h2>
-            <motion.p 
-              className="text-gray-600 dark:text-gray-300"
-              whileHover={{ scale: 1.02 }}
-            >
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-2 text-gray-800 dark:text-white">
+              {state === "Sign Up" ? "Join the Event Vibe!" : "Welcome Back"}
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300">
               {state === "Sign Up" 
                 ? "Create an account and never miss exciting events!" 
                 : "Log in to continue your event journey"}
-            </motion.p>
+            </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4 px-4">
             {state === "Sign Up" && (
               <div className="relative">
                 <input
@@ -195,7 +171,7 @@ export default function AttendeeLogin() {
                   onChange={handleChange}
                   placeholder="Full Name"
                   type="text"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:bg-gray-700 dark:text-white"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:bg-gray-600 dark:text-white"
                   required
                 />
               </div>
@@ -208,7 +184,7 @@ export default function AttendeeLogin() {
                 onChange={handleChange}
                 placeholder="Email Address"
                 type="email"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:bg-gray-700 dark:text-white"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:bg-gray-600 dark:text-white"
                 required
               />
             </div>
@@ -220,7 +196,7 @@ export default function AttendeeLogin() {
                 onChange={handleChange}
                 placeholder="Password"
                 type={showPassword ? "text" : "password"}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:bg-gray-700 dark:text-white pr-10"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:bg-gray-600 dark:text-white pr-10"
                 required
               />
               <button
@@ -240,7 +216,7 @@ export default function AttendeeLogin() {
                   onChange={handleChange}
                   placeholder="Confirm Password"
                   type={showConfirmPassword ? "text" : "password"}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:bg-gray-700 dark:text-white pr-10"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:bg-gray-600 dark:text-white pr-10"
                   required
                 />
                 <button
@@ -266,7 +242,7 @@ export default function AttendeeLogin() {
               <div className="text-center">
                 <motion.a
                   href="#"
-                  className="text-sm text-orange-500 hover:underline "
+                  className="text-sm text-orange-500 hover:underline"
                   whileHover={{ color: "#ea580c" }}
                 >
                   Forgot password?
@@ -275,16 +251,16 @@ export default function AttendeeLogin() {
             )}
           </form>
 
-          <div className="my-6 flex items-center">
-            <div className="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
+          <div className="my-6 flex items-center px-4">
+            <div className="flex-1 border-t border-gray-300 dark:border-gray-500"></div>
             <span className="px-4 text-gray-500 dark:text-gray-400 text-sm">OR</span>
-            <div className="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
+            <div className="flex-1 border-t border-gray-300 dark:border-gray-500"></div>
           </div>
 
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="flex items-center justify-center w-full border border-gray-300 dark:border-gray-600 px-4 py-3 rounded-lg font-medium text-gray-700 dark:text-gray-300"
+            className="flex items-center justify-center w-full border border-gray-300 dark:border-gray-500 px-4 py-3 rounded-lg font-medium text-gray-700 dark:text-gray-300 mx-4"
           >
             <img
               src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png"
