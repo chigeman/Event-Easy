@@ -5,8 +5,7 @@ const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
 
 // Route imports
-const authRoutes = require('./routes/routes.js');         // Handles register/login/etc.
-const userDataRoutes = require('./routes/userRoutes'); // Handles user /data endpoint
+
 
 const app = express();
 
@@ -19,8 +18,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Routes
-app.use('/Event-Easy/attendee', authRoutes);
-app.use('/Event-Easy/attendee', userDataRoutes);
+
 
 // Default fallback route
 app.get('/', (req, res) => {

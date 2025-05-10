@@ -64,7 +64,6 @@ export default function AttendeeLogin() {
         }
         return;
       }
-
       // Login logic
       const response = await axios.post(
         "http://localhost:5000/Event-Easy/attendee/login",
