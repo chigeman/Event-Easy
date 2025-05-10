@@ -1,33 +1,44 @@
-require("dotenv").config({ path: "../.env" }); // Load environment variables
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
-const router = require("./routes/routes");
-const userRouter = require("./routes/userRoutes");
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const connectDB = require('./config/db');
 
-// Connect to the database
+// Route imports
+const authRoutes = require('./routes/routes.js');         // Handles register/login/etc.
+const userDataRoutes = require('./routes/userRoutes'); // Handles user /data endpoint
+
 const app = express();
-app.use(express.json());
-app.use(cors({
-  origin: "http://localhost:5173", // your React app
-  credentials: true, 
+
+// Middleware
+app.use(cors({ 
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  credentials: true 
 }));
+app.use(express.json());
+app.use(cookieParser());
 
+// Routes
+app.use('/Event-Easy/attendee', authRoutes);
+app.use('/Event-Easy/attendee', userDataRoutes);
 
-app.use("/Event-Easy/attendee", router);
-app.use("/Event-Easy/user", userRouter);
+// Default fallback route
+app.get('/', (req, res) => {
+  res.send('🚀 Event-Easy backend is running');
+});
 
-
-// Start the server 
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("✅ MongoDB connected");
-    app.listen(process.env.PORT || 5000, () => {
-      console.log(`🚀 Server running at http://localhost:${process.env.PORT || 5000}`);
+// Start server after DB connection
+const startServer = async () => {
+  try {
+    await connectDB();
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
     });
-  })
-  .catch((err) => console.error("❌ MongoDB error:", err));
+  } catch (err) {
+    console.error('❌ Failed to start server:', err);
+    process.exit(1);
+  }
+};
+
+startServer();

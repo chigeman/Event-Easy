@@ -1,7 +1,7 @@
 const userModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const transporter = require("../config/nodemailer");
+const transporter = require("../utils/nodemailer");
 
 const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
