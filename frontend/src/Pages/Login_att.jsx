@@ -43,7 +43,7 @@ export default function AttendeeLogin() {
         }
 
         // Step 2: Send registration request with role set to "attendee"
-        const { data } = await axios.post("http://localhost:5000/Event-Easy/attendee/register", {
+        const { data } = await axios.post("http://localhost:5000/Event-Easy/users/register", {
           name: formData.name,
           email: formData.email,
           password: formData.password,
@@ -75,7 +75,7 @@ export default function AttendeeLogin() {
 
       // Login logic (Sign In)
       const response = await axios.post(
-        "http://localhost:5000/Event-Easy/attendee/login",
+        "http://localhost:5000/Event-Easy/users/login",
         formData,
         {
           withCredentials: true,
@@ -90,7 +90,7 @@ export default function AttendeeLogin() {
         setIsLoggedin(true);
         await getUserData();
         alert("Login successful! Welcome back! 🎉");
-        navigate("/Attendee_Dashboard");
+        navigate("/Attendee");
       }
 
     } catch (error) {
@@ -135,7 +135,7 @@ export default function AttendeeLogin() {
 
       // Send the email to the backend to trigger OTP
       const { data } = await axios.post(
-        'http://localhost:5000/Event-Easy/Attendee/send-verify-otp',
+        'http://localhost:5000/Event-Easy/users/send-verify-otp',
         { email },  // Send the email as part of the body
         { withCredentials: true }
       );

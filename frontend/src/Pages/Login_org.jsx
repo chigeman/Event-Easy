@@ -46,7 +46,7 @@ export default function OrganizerLogin() {
         const role = "organizer"; // Explicitly defining the role
 
         // Step 3: Send registration request for organizer
-        const { data } = await axios.post("http://localhost:5000/Event-Easy/organizer/register", {
+        const { data } = await axios.post("http://localhost:5000/Event-Easy/users/register", {
           name: formData.name,
           email: formData.email,
           password: formData.password,
@@ -78,7 +78,7 @@ export default function OrganizerLogin() {
 
       // Login logic (Sign In)
       const response = await axios.post(
-        "http://localhost:5000/Event-Easy/attendee/login",
+        "http://localhost:5000/Event-Easy/users/login",
         formData,
         {
           withCredentials: true,
@@ -138,7 +138,7 @@ export default function OrganizerLogin() {
 
       // Send the email to the backend to trigger OTP
       const { data } = await axios.post(
-        'http://localhost:5000/Event-Easy/attendee/send-verify-otp',
+        'http://localhost:5000/Event-Easy/users/send-verify-otp',
         { email },  // Send the email as part of the body
         { withCredentials: true }
       );
