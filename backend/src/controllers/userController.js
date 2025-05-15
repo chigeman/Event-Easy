@@ -1,10 +1,10 @@
 const userModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const transporter = require("../utils/nodemailer");
+const transporter = require("../config/nodemailer");
 
 const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password ,role} = req.body;
 
   try {
     const existingUser = await userModel.findOne({ email });
@@ -19,6 +19,7 @@ const registerUser = async (req, res) => {
       name,
       email,
       password: hashedPassword,
+      role,
     });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
@@ -186,4 +187,78 @@ const isAuthenticated = async (req, res) => {
   }
 }
 
-module.exports = { registerUser ,loginUser ,logoutUser, sendVerifyOtp, verifyOtp ,isAuthenticated };
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await userModel.find({}).select("-password -verifyOtp -verifyOtpExpires"); // Exclude sensitive fields
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ message: "Failed to fetch users" });
+  }
+}
+
+const getUserById = async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const user = await userModel.findById(userId).select("-password -verifyOtp -verifyOtpExpires"); // Exclude sensitive fields
+    if (!user) {
+      return res.status(404).json({ message: "User not found!" });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res.status(500).json({ message: "Failed to fetch user" });
+  }
+}
+
+const deleteUser = async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const user = await userModel.findByIdAndDelete(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found!" });
+    }
+    res.status(200).json({ message: "User deleted successfully!" });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).json({ message: "Failed to delete user" });
+  }
+}
+
+const updateUser = async (req, res) => {
+  const userId = req.params.id; // or get it from JWT: req.user.id
+  const { name, email, password, role } = req.body;
+
+  try {
+    const user = await userModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found!" });
+    }
+
+    // Check if email is changing, and if it's already taken by another user
+    if (email && email !== user.email) {
+      const emailExists = await userModel.findOne({ email });
+      if (emailExists && emailExists._id.toString() !== userId) {
+        return res.status(400).json({ message: "Email already in use by another user!" });
+      }
+      user.email = email;
+    }
+
+    // Update name and role if provided
+    if (name) user.name = name;
+
+    await user.save();
+
+    return res.status(200).json({ message: "User updated successfully", user });
+  } catch (err) {
+    console.error("Error updating user:", err);
+    return res.status(500).json({ message: "Error updating user", error: err });
+  }
+};
+
+
+
+module.exports = { registerUser ,loginUser ,getAllUsers ,logoutUser, sendVerifyOtp, verifyOtp ,isAuthenticated ,getUserById, deleteUser ,updateUser};

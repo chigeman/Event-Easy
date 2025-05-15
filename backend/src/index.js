@@ -1,8 +1,14 @@
-require('dotenv').config();
+require('dotenv').config(envPath = "../.env");
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
+const router = require('./routes/routes');
+const userRouter = require('./routes/userRoutes');
+const eventRouter = require('./routes/eventRoutes')
+// const userRouter = require('./routes/userRoutes');
+// const eventRouter = require('./routes/eventRoutes');
+
 
 // Route imports
 
@@ -25,6 +31,10 @@ app.get('/', (req, res) => {
   res.send('🚀 Event-Easy backend is running');
 });
 
+app.use("/Event-Easy/users", router);
+app.use("/Event-Easy/user", userRouter);
+app.use("/Event-Easy/Event", eventRouter);
+
 // Start server after DB connection
 const startServer = async () => {
   try {
@@ -32,6 +42,7 @@ const startServer = async () => {
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
+
     });
   } catch (err) {
     console.error('❌ Failed to start server:', err);

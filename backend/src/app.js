@@ -1,21 +1,29 @@
 const express = require("express");
 const cors = require("cors");
-const userRoutes = require("./routes/userRoutes");
 const router = require("./routes/routes");
 const userRouter = require("./routes/userRoutes");
+
+const eventRouter = require("./routes/eventRoutes");
 const authRoutes = require('./routes/routes.js');         // Handles register/login/etc.
 const userDataRoutes = require('./routes/userRoutes'); // Handles user /data endpoint
 
+
+
+// Connect to the database
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173", // your React app
+  credentials: true, 
+}));
 
-//Routes
-app.use("/api/users", userRoutes);
-app.use("/Event-Easy/attendee", router);
+
+app.use("/Event-Easy/users", router);
 app.use("/Event-Easy/user", userRouter);
+app.use("/Event-Easy/Event", eventRouter);
 app.use('/Event-Easy/attendee', authRoutes);
 app.use('/Event-Easy/attendee', userDataRoutes);
+
  
 app.get("/", (req, res) => {
   res.send("Backend for event easy is running...");

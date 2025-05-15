@@ -39,8 +39,11 @@ export default function AttendeeLogin() {
           alert("Passwords do not match!");
           return;
         }
+        // Step 2: Send registration request with role set to "attendee"
+        const { data } = await axios.post("http://localhost:5000/Event-Easy/users/register", {
 
         const { data } = await axios.post("http://localhost:5000/Event-Easy/attendee/register", {
+
           name: formData.name,
           email: formData.email,
           password: formData.password,
@@ -66,7 +69,7 @@ export default function AttendeeLogin() {
       }
       // Login logic
       const response = await axios.post(
-        "http://localhost:5000/Event-Easy/attendee/login",
+        "http://localhost:5000/Event-Easy/users/login",
         formData,
         { withCredentials: true }
       );
@@ -79,7 +82,7 @@ export default function AttendeeLogin() {
         setIsLoggedin(true);
         await getUserData();
         alert("Login successful! Welcome back! 🎉");
-        navigate("/Attendee_Dashboard");
+        navigate("/Attendee");
       }
 
     } catch (error) {
@@ -100,6 +103,37 @@ export default function AttendeeLogin() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentBg((prev) => (prev + 1) % 1);
+    }, 7000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const sendVerificatonOtp = async (email) => {
+    try {
+      axios.defaults.withCredentials = true;
+
+      // Send the email to the backend to trigger OTP
+      const { data } = await axios.post(
+        'http://localhost:5000/Event-Easy/users/send-verify-otp',
+        { email },  // Send the email as part of the body
+        { withCredentials: true }
+      );
+
+      if (data.success) {
+        console.log("Verification email sent successfully:", data.message);
+        alert("An OTP has been sent to your email address. Please verify your email.");
+      } else {
+        console.error("Failed to send verification email:", data.message);
+        alert("Failed to send verification OTP. Please try again.");
+      }
+
+    } catch (error) {
+      console.error("Error sending verification email:", error);
+      alert("There was an error sending the OTP. Please try again.");
+    }
+  }
   // Custom cursor with better color scheme
   const CustomCursor = () => (
     <>
@@ -132,6 +166,7 @@ export default function AttendeeLogin() {
       />
     </>
   );
+
 
   return (
     <motion.div
