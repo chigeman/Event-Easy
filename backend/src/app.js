@@ -12,8 +12,8 @@ app.use(cors());
 app.use("/api/users", userRoutes);
 app.use("/Event-Easy/attendee", router);
 app.use("/Event-Easy/user", userRouter);
- 
-app.get("/", (req, res) => {
+  
+app.get("/", (req, res) => { 
   res.send("Backend for event easy is running...");
 });
 
