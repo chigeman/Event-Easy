@@ -38,7 +38,7 @@ const EmailVerify = () => {
       const otpString = otp.join("");
 
       const response = await axios.post(
-        "http://localhost:5000/Event-Easy/attendee/verify-otp",
+        "http://localhost:5000/Event-Easy/users/verify-otp",
         { otp: otpString },
         {
           headers: {
@@ -63,7 +63,7 @@ const EmailVerify = () => {
 
   useEffect(() => {
     if (isVerified) {
-      navigate("/Attendee_Dashboard");
+      navigate("/Attendee");
     }
   }, [isVerified, navigate]);
 

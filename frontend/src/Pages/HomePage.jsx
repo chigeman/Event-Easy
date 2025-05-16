@@ -98,7 +98,7 @@ const EventEasyLanding = () => {
     <div className="font-sans text-gray-900 dark:text-gray-100 min-h-screen">
       {/* Custom Cursor */}
       <motion.div
-        className="fixed w-8 h-8 border-2 border-purple-500 rounded-full pointer-events-none z-50"
+        className="fixed w-8 h-8 border-2 border-orange-400 rounded-full pointer-events-none z-50"
         style={{
           x: cursorXSpring,
           y: cursorYSpring,

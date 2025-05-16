@@ -45,7 +45,7 @@ export const AppContextProvider = (props) => {
 
   const getAuthState = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/Event-Easy/Attendee/is-auth', { withCredentials: true });
+      const { data } = await axios.get('http://localhost:5000/Event-Easy/users/is-auth', { withCredentials: true });
   
       if (data.success) {
         setUserData(data.userData);

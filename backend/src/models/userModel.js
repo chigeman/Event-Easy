@@ -20,6 +20,11 @@ const userSchema = new mongoose.Schema({
     required: [true, "Password is required"],
     minlength: [6, "Password must be at least 6 characters"],
   },
+   bankAccount: {
+    account_name: String,
+    account_number: String,
+    bank_code: String
+  },
   verifyOtpExpireAt: {
     type: Number,
     default: 0, // OTP valid for 24 hours
@@ -42,11 +47,12 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     enum: ['attendee', 'organizer'],  // Allowed roles
-    default: 'attendee',  // Default role
-  required: true,
+    default: 'attendee',
+    required: true,
   },
 });
 
+// Generate JWT method
 userSchema.methods.generateAuthToken = function () {
   const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
     expiresIn: "1h",
@@ -54,4 +60,5 @@ userSchema.methods.generateAuthToken = function () {
   return token;
 };
 
-module.exports = mongoose.model("Attendee", userSchema, "Attendee");
+// Export model with explicit collection name "Users"
+module.exports = mongoose.model("User", userSchema, "Users");
