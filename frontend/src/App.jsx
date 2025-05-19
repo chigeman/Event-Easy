@@ -14,6 +14,8 @@ import UserManagement from './Pages/userManagement';
 import EventManagement from './Pages/eventManagement'; // Ensure this is the correct path to your eventManagement component
 import EventDetail from './Pages/eventDetail'; // Ensure this is the correct path to your eventDetail component
 import AttendeeEventPage from './Pages/attendEvent';
+import PaymentOption from './Pages/PaymentOption';
+import PaymentChappa from './Pages/PaymentChappa';
 
 
 export default function App() {
@@ -36,7 +38,8 @@ export default function App() {
         <Route path="/admin/event-management" element={<EventManagement />} /> {/* Ensure this is correct for the event management page */}
         <Route path="/events/:eventId" element={<EventDetail />} />
         <Route path= "/attend/:id" element= {<AttendeeEventPage/>}/>
-
+        <Route path="/:id/PaymentOption" element={<PaymentOption />} />
+        <Route path="/attend/:id/PaymentOption/chapa" element={<PaymentChappa />} />
       </Routes>
      
     </div>
