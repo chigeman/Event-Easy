@@ -158,6 +158,16 @@ const Organizer = ({ user }) => {
           />
         </div>
 
+        <div>
+          <input
+            type="text"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            placeholder="Enter event location (e.g., Addis Ababa)"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          />
+        </div>
+
         {/* Updates */}
         <div>
           <label className="block mb-1 text-gray-700 font-semibold">Updates</label>

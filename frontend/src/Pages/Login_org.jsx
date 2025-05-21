@@ -76,7 +76,6 @@ export default function OrganizerLogin() {
       const response = await axios.post(
 
         "http://localhost:5000/Event-Easy/users/login",
-        "http://localhost:5000/Event-Easy/organizer/login",
         formData,
         { withCredentials: true }
       );
