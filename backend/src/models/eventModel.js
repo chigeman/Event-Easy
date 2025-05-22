@@ -51,17 +51,19 @@ const eventSchema = new mongoose.Schema({
   },
   venue_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Venue',
+    ref: 'Venue', 
   },
   organizer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User', // refers to a user with role = 'organizer'
     required: true,
   },
-  attendees: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', // refers to users with role = 'attendee'
-  }],
+attendees: [{
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  first_name: String,
+  last_name: String,
+  email: String
+}],
   status: {
     type: String,
     enum: ['pending', 'approved', 'rejected'],

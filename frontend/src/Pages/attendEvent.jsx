@@ -42,7 +42,7 @@ const AttendeeEventPage = () => {
   }, [id]);
 
 const handleRegister = () => {
-  navigate(`/${id}/PaymentOption`);
+  navigate(`/attend/${id}/PaymentOption`);
 };
 
   // Move the loading check here!
