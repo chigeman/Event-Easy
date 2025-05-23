@@ -29,7 +29,7 @@ export default function OrganizerLogin() {
     }));
   };
 
-  const handleSubmit = async (e) => {
+ const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       axios.defaults.withCredentials = true;
