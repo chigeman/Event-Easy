@@ -42,7 +42,7 @@ export default function AttendeeLogin() {
         // Step 2: Send registration request with role set to "attendee"
         const { data } = await axios.post("http://localhost:5000/Event-Easy/users/register", {
 
-        const { data } = await axios.post("http://localhost:5000/Event-Easy/attendee/register", {
+        // const { data } = await axios.post("http://localhost:5000/Event-Easy/attendee/register", {
 
           name: formData.name,
           email: formData.email,
