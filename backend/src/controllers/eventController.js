@@ -4,7 +4,7 @@ const cloudinary = require("../utils/cloudinary");
 
 
 // Create new event
-const createEvent = async (req, res) => {
+const createEvent = async (req, res) => { 
   const userId = req.user?.id;
   if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
@@ -17,6 +17,8 @@ const createEvent = async (req, res) => {
       description,
       updates,
       organizer,
+      longitude, // 👈 from frontend
+      latitude,  // 👈 from frontend
     } = req.body;
 
     const imageFile = req.files?.imageUrl?.[0];
@@ -25,8 +27,12 @@ const createEvent = async (req, res) => {
     console.log("BODY:", req.body);
     console.log("FILES:", req.files);
 
-
     if (!imageFile) return res.status(400).json({ message: 'Image is required' });
+
+    // Validate coordinates
+    if (!longitude || !latitude) {
+      return res.status(400).json({ message: "Location (longitude & latitude) is required" });
+    }
 
     const imageData = {
       public_id: imageFile.filename,
@@ -52,6 +58,10 @@ const createEvent = async (req, res) => {
       attendees: [],
       organizer: userId,
       status: 'pending',
+      location: {
+        type: 'Point',
+        coordinates: [parseFloat(longitude), parseFloat(latitude)], // 👈 Map-ready!
+      },
     });
 
     res.status(201).json({ message: 'Event created successfully', event });
