@@ -16,6 +16,7 @@ import AttendeeEventPage from './Pages/attendEvent';
 import PaymentOption from './Pages/PaymentOption';
 import PaymentChappa from './Pages/PaymentChappa';
 import PaymentVerify from './Pages/PaymentVerify'; // Add this new import
+import PaymentChapaThanks from './Pages/PaymentChapaThanks'; // Add this new import
 
 export default function App() {
   return (
@@ -41,6 +42,7 @@ export default function App() {
         <Route path="/attend/:id/PaymentOption" element={<PaymentOption />} />
         <Route path="/attend/:id/PaymentOption/chapa" element={<PaymentChappa />} />
         <Route path="/attend/:id/PaymentOption/verify" element={<PaymentVerify />} />
+        <Route path="/attend/:id/PaymentOption/thanks" element={<PaymentChapaThanks />} />
         
         {/* Additional Event Payment Route */}
       </Routes>

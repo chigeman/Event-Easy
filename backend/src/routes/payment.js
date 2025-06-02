@@ -23,8 +23,8 @@ router.post('/payment/:id/initiate', async (req, res) => {
     first_name,
     last_name,
     tx_ref,
-return_url: `https://1c9a-213-55-79-195.ngrok-free.app/attend/${id}/PaymentOption/verify?tx_ref=${tx_ref}`,
-callback_url: `https://1c9a-213-55-79-195.ngrok-free.app/attend/${id}/PaymentOption/verify?tx_ref=${tx_ref}`,
+    return_url: `https://event-easy-omega.vercel.app/attend/${id}/PaymentOption/verify?tx_ref=${tx_ref}`,
+    callback_url: `https://event-easy-omega.vercel.app/attend/${id}/PaymentOption/verify?tx_ref=${tx_ref}`,
   },
   {
     headers: {

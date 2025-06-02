@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const PaymentVerify = () => {
@@ -7,6 +7,8 @@ const PaymentVerify = () => {
   const [searchParams] = useSearchParams();
   const [status, setStatus] = useState('verifying');
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     let tx_ref = searchParams.get('tx_ref');
@@ -34,6 +36,10 @@ const PaymentVerify = () => {
           setStatus('success');
           setMessage('Payment successful! You are now registered for the event.');
           localStorage.removeItem('attendeeInfo');
+
+          setTimeout(() => {
+            navigate(`/attend/${id}/PaymentOption/thanks`);
+          }, 2000);
         } else {
           setStatus('error');
           setMessage(res.data.message || 'Payment verification failed.');
