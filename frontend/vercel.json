@@ -20,5 +20,9 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
+     {
+      "src": "/(.*\\.(png|jpg|jpeg|gif|svg))",
+      "headers": { "Cache-Control": "public, max-age=31536000" }
+    }
   ]
 }
