@@ -6,5 +6,6 @@ export default defineConfig({
   base: '/', // Critical for correct asset paths
   build: {
     outDir: 'dist', 
+     assetsDir: 'assets',
   },
 });
