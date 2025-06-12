@@ -7,7 +7,7 @@ const router = require('./routes/routes');
 const userRouter = require('./routes/userRoutes');
 const eventRouter = require('./routes/eventRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
-const paymentRoutes = require('./routes/payment');
+//const paymentRoutes = require('./routes/payment');
  
 
 // Route imports
@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
 
 app.use("/Event-Easy/users", router);
 app.use("/Event-Easy/user", userRouter);
-app.use("/Event-Easy/Event", paymentRoutes);
+//app.use("/Event-Easy/Event", paymentRoutes);
 app.use("/Event-Easy/Event", eventRouter);
 app.use('/Event-Easy/review', reviewRouter);
 
