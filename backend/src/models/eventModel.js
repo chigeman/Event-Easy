@@ -58,12 +58,6 @@ const eventSchema = new mongoose.Schema({
     ref: 'User', // refers to a user with role = 'organizer'
     required: true,
   },
-attendees: [{
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  first_name: String,
-  last_name: String,
-  email: String
-}],
   status: {
     type: String,
     enum: ['pending', 'approved', 'rejected'],
