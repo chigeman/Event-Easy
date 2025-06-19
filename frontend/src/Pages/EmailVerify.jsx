@@ -38,7 +38,7 @@ const EmailVerify = () => {
       const otpString = otp.join("");
 
       const response = await axios.post(
-        "http://localhost:5000/Event-Easy/users/verify-otp",
+        "https://event-easy-backendbacken.onrender.com/Event-Easy/users/verify-otp",
         { otp: otpString },
         {
           headers: {

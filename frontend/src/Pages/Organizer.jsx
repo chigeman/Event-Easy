@@ -63,7 +63,7 @@ const Organizer = ({ user }) => {
   
     try {
       const res = await axios.post(
-        'http://localhost:5000/Event-Easy/Event/createEvents',
+        'https://event-easy-backendbacken.onrender.com/Event-Easy/Event/createEvents',
         formData,
         {
           headers: {
