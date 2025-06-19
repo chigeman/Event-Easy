@@ -41,7 +41,7 @@ export default function AttendeeLogin() {
           return;
         }
         // Step 2: Send registration request with role set to "attendee"
-        const { data } = await axios.post("https://event-easy-backendbacken.onrender.com/Event-Easy/users/register", {
+        const { data } = await axios.post("http://localhost:5000/Event-Easy/users/register", {
 
           name: formData.name,
           email: formData.email,
@@ -68,7 +68,7 @@ export default function AttendeeLogin() {
       }
       // Login logic
       const response = await axios.post(
-        "https://event-easy-backendbacken.onrender.com/Event-Easy/users/login",
+        "http://localhost:5000/Event-Easy/users/login",
         formData,
         { withCredentials: true }
       );

@@ -21,7 +21,7 @@ const Admin = () => {
 
   const fetchUserData = async () => {
     try {
-      const response = await axios.get("https://event-easy-backendbacken.onrender.com/Event-Easy/users/users", {
+      const response = await axios.get("http://localhost:5000/Event-Easy/users/users", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`
         }
@@ -41,7 +41,7 @@ const Admin = () => {
 
   const fetchEventData = async () => {
     try {
-      const res = await axios.get("https://event-easy-backendbacken.onrender.com/Event-Easy/Event/events");
+      const res = await axios.get("http://localhost:5000/Event-Easy/Event/events");
       const events = res.data;
 
       const total = events.length;

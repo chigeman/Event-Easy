@@ -40,7 +40,7 @@ const AttendeePage = () => {
     const token = localStorage.getItem('token');
 
     try {
-      const res = await fetch(`https://event-easy-backendbacken.onrender.com/Event-Easy/review/${eventId}/review`, {
+      const res = await fetch(`http://localhost:5000/Event-Easy/review/${eventId}/review`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -61,7 +61,7 @@ const AttendeePage = () => {
 
   const fetchReviews = async (eventId) => {
     try {
-      const response = await axios.get(`https://event-easy-backendbacken.onrender.com/Event-Easy/review/${eventId}/reviews`);
+      const response = await axios.get(`http://localhost:5000/Event-Easy/review/${eventId}/reviews`);
       setReviews((prev) => ({ ...prev, [eventId]: response.data.reviews || [] }));
     } catch (error) {
       console.error(`Error fetching reviews for event ${eventId}:`, error);
@@ -76,7 +76,7 @@ const AttendeePage = () => {
   };
 
   useEffect(() => {
-    fetch('https://event-easy-backendbacken.onrender.com/Event-Easy/Event/events')
+    fetch('http://localhost:5000/Event-Easy/Event/events')
       .then((res) => res.json())
       .then((data) => {
         const approvedEvents = data.filter((event) => event.status === 'approved');

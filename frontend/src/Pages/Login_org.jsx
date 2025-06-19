@@ -45,7 +45,7 @@ export default function OrganizerLogin() {
         const role = "organizer"; // Explicitly defining the role
 
         // Step 3: Send registration request for organizer
-        const { data } = await axios.post("https://event-easy-backendbacken.onrender.com/Event-Easy/users/register", {
+        const { data } = await axios.post("http://localhost:5000/Event-Easy/users/register", {
 
  
           name: formData.name,
@@ -75,8 +75,8 @@ export default function OrganizerLogin() {
       // Login logic
       const response = await axios.post(
 
-        "http://https://event-easy-backendbacken.onrender.com/Event-Easy/users/login",
-        "https://event-easy-backendbacken.onrender.com/Event-Easy/organizer/login",
+        "http://localhost:5000/Event-Easy/users/login",
+        "http://localhost:5000/Event-Easy/organizer/login",
         formData,
         { withCredentials: true }
       );
@@ -148,9 +148,9 @@ export default function OrganizerLogin() {
       axios.defaults.withCredentials = true;
 
       const { data } = await axios.post(
-        'https://event-easy-backendbacken.onrender.com/Event-Easy/users/send-verify-otp',
+        'http://localhost:5000/Event-Easy/users/send-verify-otp',
         { email },  // Send the email as part of the body
-        'https://event-easy-backendbacken.onrender.com/Event-Easy/organizer/send-verify-otp',
+        'http://localhost:5000/Event-Easy/organizer/send-verify-otp',
         { email },
         { withCredentials: true }
       );

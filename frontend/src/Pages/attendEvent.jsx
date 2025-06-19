@@ -24,7 +24,7 @@ const AttendeeEventPage = () => {
     const token = localStorage.getItem('token');
     if (!token) return;
 
-    fetch(`https://event-easy-backendbacken.onrender.com/Event-Easy/Event/events/${id}`, {
+    fetch(`http://localhost:5000/Event-Easy/Event/events/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

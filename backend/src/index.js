@@ -16,7 +16,7 @@ const app = express();
 
 // Middleware
 app.use(cors({ 
-  origin:'https://event-easy-n4tha.vercel.app',
+  origin: process.env.FRONTEND_URL,
   credentials: true 
 }));
 app.use(express.json());
