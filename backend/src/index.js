@@ -7,6 +7,7 @@ const router = require('./routes/routes');
 const userRouter = require('./routes/userRoutes');
 const eventRouter = require('./routes/eventRoutes');
 const reviewRouter = require('./routes/reviewRoutes'); 
+const paymentRoutes = require('./routes/paymentRoutes');
 
 // Route imports
 
@@ -15,7 +16,7 @@ const app = express();
 
 // Middleware
 app.use(cors({ 
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: process.env.FRONTEND_URL,
   credentials: true 
 }));
 app.use(express.json());
@@ -33,6 +34,8 @@ app.use("/Event-Easy/users", router);
 app.use("/Event-Easy/user", userRouter);
 app.use("/Event-Easy/Event", eventRouter);
 app.use('/Event-Easy/review', reviewRouter);
+app.use('/api', paymentRoutes);
+
 
 // Start server after DB connection
 const startServer = async () => {
