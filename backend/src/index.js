@@ -6,8 +6,11 @@ const connectDB = require('./config/db');
 const router = require('./routes/routes');
 const userRouter = require('./routes/userRoutes');
 const eventRouter = require('./routes/eventRoutes');
-const reviewRouter = require('./routes/reviewRoutes'); 
-const paymentRoutes = require('./routes/paymentRoutes');
+const reviewRouter = require('./routes/reviewRoutes');
+const reportRouter = require('./routes/reportRoutes');
+// const userRouter = require('./routes/userRoutes');
+// const eventRouter = require('./routes/eventRoutes');
+
 
 // Route imports
 
@@ -34,7 +37,7 @@ app.use("/Event-Easy/users", router);
 app.use("/Event-Easy/user", userRouter);
 app.use("/Event-Easy/Event", eventRouter);
 app.use('/Event-Easy/review', reviewRouter);
-app.use('/api', paymentRoutes);
+app.use('/Event-Easy/report', reportRouter);
 
 
 // Start server after DB connection

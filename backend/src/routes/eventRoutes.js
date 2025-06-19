@@ -34,7 +34,8 @@ router.post("/events/:id/attend", userAuth, attendEvent);
 
 router.get("/events/:id", userAuth, getEventById);
 
-//router.post("/events/:id/leave", isAuthenticated, leaveEvent);
+
+// router.post("/events/:id/leave", isAuthenticated, leaveEvent);
 
 // router.put("/events/:id/status", userAuth, isAdmin, updateEventStatus);
 
