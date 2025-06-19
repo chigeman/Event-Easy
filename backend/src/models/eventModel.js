@@ -75,6 +75,7 @@ const eventSchema = new mongoose.Schema({
     ref: 'User', // refers to a user with role = 'organizer'
     required: true,
   },
+
   status: {
     type: String,
     enum: ['pending', 'approved', 'rejected'],

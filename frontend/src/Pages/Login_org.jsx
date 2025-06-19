@@ -75,8 +75,7 @@ export default function OrganizerLogin() {
       // Login logic
       const response = await axios.post(
 
-        "http://https://event-easy-backendbacken.onrender.com/Event-Easy/users/login",
-        "https://event-easy-backendbacken.onrender.com/Event-Easy/organizer/login",
+
         formData,
         { withCredentials: true }
       );

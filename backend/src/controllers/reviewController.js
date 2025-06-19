@@ -27,7 +27,7 @@ const getEventReviews = async (req, res) => {
   const { eventId } = req.params;
 
   try {
-    const reviews = await Review.find({ eventId }).populate("userId", "name"); // 👈 show name from User model
+    const reviews = await Review.find({ eventId }).populate("userId", "name"); 
     res.status(200).json({ success: true, reviews });
   } catch (err) {
     console.error(err);

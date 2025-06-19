@@ -17,8 +17,7 @@ import AttendeeEventPage from './Pages/attendEvent';
 export default function App() {
   return (
     <div>
-      <NavBar />
-      
+
       <Routes>
         {/* Existing Routes */}
         <Route path="/" element={<HomePage />} />
