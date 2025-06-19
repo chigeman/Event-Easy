@@ -19,7 +19,7 @@ const app = express();
 
 // Middleware
 app.use(cors({ 
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: process.env.FRONTEND_URL,
   credentials: true 
 }));
 app.use(express.json());
@@ -27,7 +27,7 @@ app.use(cookieParser());
 
 // Routes
 
-
+ 
 // Default fallback route
 app.get('/', (req, res) => {
   res.send('🚀 Event-Easy backend is running');
