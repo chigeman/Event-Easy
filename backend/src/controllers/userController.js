@@ -145,7 +145,6 @@ const sendVerifyOtp = async (req, res) => {
   }
 }
 
-
 const verifyOtp = async (req, res) => {
   const { otp } = req.body; // Get only the OTP from body
   const userId = req.user.id;
@@ -228,37 +227,73 @@ const deleteUser = async (req, res) => {
 }
 
 const updateUser = async (req, res) => {
-  const userId = req.params.id; // or get it from JWT: req.user.id
-  const { name, email, password, role } = req.body;
-
+  const userId = req.params.id;
   try {
     const user = await userModel.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found!" });
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found!" });
+    const imageFile = req.files?.imageUrl?.[0];
+
+    // Other fields come from req.body as usual (strings)
+    const {
+      name,
+      email,
+      password,
+      role,
+      bio,
+      social = {},
+      bankAccount = {},
+    } = req.body;
+
+    if (imageFile) {
+      // Here you should upload imageFile to Cloudinary or your storage service.
+      // For example, if multer-storage-cloudinary already saves it and sets req.files with url, use that:
+      user.imageUrl = {
+        public_id: imageFile.filename, // or imageFile.public_id if Cloudinary returns that
+        url: imageFile.path,            // or imageFile.url if Cloudinary returns that
+      };
     }
+    
 
-    // Check if email is changing, and if it's already taken by another user
     if (email && email !== user.email) {
       const emailExists = await userModel.findOne({ email });
       if (emailExists && emailExists._id.toString() !== userId) {
-        return res.status(400).json({ message: "Email already in use by another user!" });
+        return res.status(400).json({ message: "Email already in use!" });
       }
       user.email = email;
     }
 
-    // Update name and role if provided
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
+    }
+
     if (name) user.name = name;
+    if (role) user.role = role;
+    if (bio !== undefined) user.bio = bio;
+
+    // Update nested social and bankAccount objects safely
+    user.social = {
+      facebook: social.facebook ?? user.social.facebook,
+      twitter: social.twitter ?? user.social.twitter,
+      instagram: social.instagram ?? user.social.instagram,
+      linkedin: social.linkedin ?? user.social.linkedin,
+    };
+
+    user.bankAccount = {
+      account_name: bankAccount.account_name ?? user.bankAccount.account_name,
+      account_number: bankAccount.account_number ?? user.bankAccount.account_number,
+      bank_code: bankAccount.bank_code ?? user.bankAccount.bank_code,
+    };
 
     await user.save();
 
-    return res.status(200).json({ message: "User updated successfully", user });
+    res.status(200).json({ message: "User updated successfully", user });
   } catch (err) {
-    console.error("Error updating user:", err);
-    return res.status(500).json({ message: "Error updating user", error: err });
+    console.error("🔥 Error updating user:", err);
+    res.status(500).json({ message: "Error updating user", error: err.message });
   }
 };
-
 
 
 module.exports = { registerUser ,loginUser ,getAllUsers ,logoutUser, sendVerifyOtp, verifyOtp ,isAuthenticated ,getUserById, deleteUser ,updateUser};

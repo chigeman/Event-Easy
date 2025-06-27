@@ -6,7 +6,6 @@ import bg_1 from "../assets/bg_1.jpg";
 import { appContent } from "../context/AppContext";
 import { FaCalendarAlt, FaEye, FaEyeSlash } from "react-icons/fa";
 
-
 export default function AttendeeLogin() {
   const { setIsLoggedin, getUserData } = useContext(appContent);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });

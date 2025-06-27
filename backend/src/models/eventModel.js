@@ -51,25 +51,8 @@ const eventSchema = new mongoose.Schema({
   },
   venue_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Venue', 
+    ref: 'Venue',
   },
-  attendees: [{
-    user: { 
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: 'User',
-      required: true 
-    },
-    paymentStatus: {
-      type: String,
-      enum: ['pending', 'completed', 'failed'],
-      default: 'pending'
-    },
-    paymentReference: String,
-    registeredAt: {
-      type: Date,
-      default: Date.now
-    }
-  }],
   organizer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User', // refers to a user with role = 'organizer'
