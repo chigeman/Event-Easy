@@ -84,10 +84,34 @@ const createEvent = async (req, res) => {
 //   }
 // };
 
+const getOrganizerEvents =  async (req, res) => {
+  const { organizerId } = req.params;
+  console.log("Organizer ID:", organizerId);
+
+  if (!mongoose.Types.ObjectId.isValid(organizerId)) {
+    return res.status(400).json({ message: "Invalid Organizer ID" });
+  }
+
+  try {
+    const events = await Event.find({ organizer: organizerId })
+      .populate("organizer", "name email imageUrl") // Populate organizer details
+      .populate("attendees", "name email imageUrl")  
+
+    if (!events || events.length === 0) {
+      return res.status(404).json({ message: "No events found for this organizer" });
+    }
+
+    res.status(200).json(events);
+  } catch (err) {
+    console.error("Error fetching events:", err);
+    res.status(500).json({ message: "Failed to fetch events", error: err.message });
+  }
+};
+
 const getAllEvents = async (req, res) => {
   try {
     const events = await Event.find()
-      .populate("organizer", "name email")
+      .populate('organizer', 'name email imageUrl') 
       .populate("attendees", "name email");
       
     res.status(200).json(events);
@@ -286,5 +310,6 @@ module.exports = {
   leaveEvent,
   updateEventStatus, // Export the updateEventStatus function
   updateEvent,
-  deleteEvent
+  deleteEvent,
+  getOrganizerEvents
 };

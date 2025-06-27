@@ -8,18 +8,6 @@ const AttendeeEventPage = () => {
   const [event, setEvent] = useState(null);
   const [attending, setAttending] = useState(false);
 
-  // Helper to get userId from token
-  const getUserIdFromToken = () => {
-    const token = localStorage.getItem('token');
-    if (!token) return null;
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload.id;
-    } catch {
-      return null;
-    }
-  };
-
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) return;
@@ -33,20 +21,40 @@ const AttendeeEventPage = () => {
       .then((data) => {
         setEvent(data);
 
-        const userId = getUserIdFromToken();
-        if (userId && data.attendees && data.attendees.includes(userId)) {
+        // Decode userId from token
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const userId = payload.id;
+
+        if (data.attendees && data.attendees.includes(userId)) {
           setAttending(true);
         }
       })
       .catch((error) => console.error('Error fetching event:', error));
   }, [id]);
 
-const handleRegister = () => {
-  navigate(`/attend/${id}/PaymentOption`);
-};
+  const handleRegister = () => {
+    const token = localStorage.getItem('token');
+    fetch(`http://localhost:5000/Event-Easy/Event/events/${id}/attend`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ userId: 'attendeeUserId' }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          setAttending(true);
+          alert('Successfully registered for the event!');
+        } else {
+          alert('Registration failed');
+        }
+      })
+      .catch((error) => console.error('Error registering:', error));
+  };
 
-  // Move the loading check here!
-  if (!event || !event.organizer) {
+  if (!event) {
     return <div className="text-center text-xl text-gray-500">Loading...</div>;
   }
 
@@ -58,7 +66,7 @@ const handleRegister = () => {
         <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-6 space-y-5">
           <div className="flex items-center gap-4">
             <img
-              src={event.organizer?.imageUrl || 'https://ui-avatars.com/api/?name=User'}
+              src={event.organizer.imageUrl || 'https://ui-avatars.com/api/?name=User'}
               alt="Organizer"
               className="w-16 h-16 rounded-full object-cover border-2 border-indigo-500"
             />

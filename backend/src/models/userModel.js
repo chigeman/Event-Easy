@@ -15,16 +15,73 @@ const userSchema = new mongoose.Schema({
       "Please provide a valid email",
     ],
   },
+  imageUrl: { 
+    public_id: {
+      type: String,
+      required: true,
+    },
+    url: {
+      type: String,
+    },         
+  },
+  
   password: {
     type: String,
     required: [true, "Password is required"],
     minlength: [6, "Password must be at least 6 characters"],
   },
-   bankAccount: {
-    account_name: String,
-    account_number: String,
-    bank_code: String
+
+  bio: {
+    type: String,
+    maxlength: 1000,
+    default: "",
   },
+
+  social: {
+    facebook: {
+      type: String,
+      trim: true,
+      match: [/^https?:\/\/(www\.)?facebook\.com\/.+$/, "Invalid Facebook URL"],
+      default: "",
+    },
+    twitter: {
+      type: String,
+      trim: true,
+      match: [/^https?:\/\/(www\.)?twitter\.com\/.+$/, "Invalid Twitter URL"],
+      default: "",
+    },
+    instagram: {
+      type: String,
+      trim: true,
+      match: [/^https?:\/\/(www\.)?instagram\.com\/.+$/, "Invalid Instagram URL"],
+      default: "",
+    },
+    linkedin: {
+      type: String,
+      trim: true,
+      match: [/^https?:\/\/(www\.)?linkedin\.com\/.+$/, "Invalid LinkedIn URL"],
+      default: "",
+    },
+  },
+
+  bankAccount: {
+    account_name: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    account_number: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    bank_code: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+  },
+
   verifyOtpExpireAt: {
     type: Number,
     default: 0, // OTP valid for 24 hours
@@ -46,8 +103,8 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['attendee', 'organizer'],  // Allowed roles
-    default: 'attendee',
+    enum: ["attendee", "organizer"], // Allowed roles
+    default: "attendee",
     required: true,
   },
 });

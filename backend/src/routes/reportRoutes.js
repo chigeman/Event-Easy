@@ -20,6 +20,8 @@ const userAuth = require('../middlewares/userAuth');
 // @access  Private (User must be logged in)
 router.post('/:eventId', userAuth, createEventReport);
 
+
+
 // // @route   GET /api/reports
 // // @desc    Get all event reports
 // // @access  Private (Admin only)

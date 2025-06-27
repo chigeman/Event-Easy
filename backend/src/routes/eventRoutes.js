@@ -10,7 +10,8 @@ const {
   leaveEvent,
   updateEventStatus,
   updateEvent,
-  deleteEvent
+  deleteEvent,
+  getOrganizerEvents
 } = require("../controllers/eventController");
 
 // router.post("/createEvents", isAuthenticated, createEvent);
@@ -24,7 +25,10 @@ router.post(
   ]),
   userAuth,
   createEvent
-)
+);
+
+// Get events by organizer name (query param)
+router.get('/events/organizer/:organizerId', getOrganizerEvents);
 
 router.get("/events", getAllEvents);
 
